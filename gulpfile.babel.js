@@ -3,10 +3,7 @@ import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import browserSync from 'browser-sync';
 import del from 'del';
-import {
-    stream as wiredep
-}
-from 'wiredep';
+
 
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
@@ -15,7 +12,7 @@ const config = {
     src: 'public/',//源文件路径
     dist: 'dist/',//静态资源产物路径
     view: 'views/',//页面路径
-    viewOut:'app/views/',//页面处理之后路径
+    viewOut:'app/views',//页面处理之后路径
     staticPath:'http://staitc.settle.app.ymatou.com/',//静态站点host
     cssSrc: [
         'public/{styles,css}/{,*/}*.scss',
@@ -66,6 +63,10 @@ gulp.task('html', ['styles'], () => {
         searchPath: ['.tmp', config.src ]
     });
 
+    const excludeHtml = $.filter(['!*.html'],{
+        restore:true
+    });
+
     return gulp.src(config.view+'{,*/}*.html')
         .pipe(assets)
         .pipe($.rev())
@@ -78,11 +79,15 @@ gulp.task('html', ['styles'], () => {
         .pipe($.revReplace({
             prefix:config.staticPath
         }))
-        .pipe($.if('*.html', $.minifyHtml({
+        .pipe(excludeHtml)
+        .pipe(gulp.dest(config.dist))
+        .pipe(excludeHtml.restore)
+        .pipe($.filter('*.html'))
+        .pipe($.minifyHtml({
             conditionals: true,
             loose: true
-        })))
-        .pipe(gulp.dest(config.dist));
+        }))
+        .pipe(gulp.dest(config.viewOut));
 });
 
 gulp.task('images', () => {
@@ -148,7 +153,6 @@ gulp.task('serve', ['styles', 'fonts'], () => {
 
     gulp.watch(config.src+'styles/**/*.scss', ['styles']);
     gulp.watch(config.src+'fonts/**/*', ['fonts']);
-    gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
 
 gulp.task('serve:dist', () => {
@@ -178,19 +182,9 @@ gulp.task('serve:test', () => {
     gulp.watch('test/spec/**/*.js', ['lint:test']);
 });
 
-// inject bower components
-gulp.task('wiredep', () => {
-    gulp.src(config.src+'styles/{**,*}.scss')
-        .pipe(wiredep({
-            ignorePath: /^(\.\.\/)+/
-        }))
-        .pipe(gulp.dest(config.src+'styles'));
-
-    gulp.src(config.view+'{,*/}*.html')
-        .pipe(wiredep({
-            ignorePath: /^(\.\.\/)*\.\./
-        }))
-        .pipe(gulp.dest(config.viewOut));
+gulp.task('copy:html', () => {
+    gulp.src(config.dist+'{**,*}/*.html')
+      .pipe(gulp.dest(config.viewOut));
 });
 
 gulp.task('rev', () => {
@@ -201,7 +195,7 @@ gulp.task('rev', () => {
 
 gulp.task('build', ['lint', 'images', 'fonts', 'extras', 'html'], () => {
     return gulp.src(config.dist+'**/*').pipe($.size({
-        title: 'build',
+        title: '构建项目',
         gzip: true
     })).on('end', () => {
         gulp.start('rev');

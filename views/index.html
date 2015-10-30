@@ -1,13 +1,271 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cmn-Hans" ng-app="settle.app">
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
-     <!-- build:css /styles/index.css-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="dns-prefetch" href="//static.matouapp.ymatou.com">
+    <link rel="dns-prefetch" href="//staticontent.matouapp.ymatou.com">
+    <link rel="dns-prefetch" href="//staticwap.ymatou.com">
+    <link rel="shortcut icon" type="image/x-icon" href="http://staticontent.ymatou.com/ymtapp/matouapp.ico" />
+    <title>洋码头-结算页</title>
+    <script data-js-path="redraw.js">
+     !(function(relWinth,relFontSize){var ua=navigator.userAgent,isIos=/iphone|ipad|ipod/i.test(ua),isMobile=/Mobile/i.test(ua);var meta=document.querySelector("[name=viewport]")||(function(){var _meta=document.createElement("meta");_meta.name="viewport"})(),content=meta.content||"",matchScale=content.match(/initial\-scale=([\d\.]+)/),matchWidth=content.match(/width=([\d\.]+)/),dpr=isIos?window.devicePixelRatio?Math.min(window.devicePixelRatio,3):1:1,docEl=document.documentElement,maxWidth=dpr*(docEl.dataset.mw||750),scale=1/dpr,tid;relWinth=relWinth||320;relFontSize=relFontSize||16;if(meta){if(matchScale){content=content.replace(/initial\-scale=([\d\.]+)/,"initial-scale="+scale).replace(/minimum\-scale=([\d\.]+)/,"minimum-scale="+scale).replace(/maximum\-scale=([\d\.]+)/,"maximum-scale="+scale)}else{content+=",initial-scale="+scale}meta.content=content}else{meta=doc.createElement("meta");meta.name="viewport";meta.content=content;docEl.firstElementChild.appendChild(meta)}var redraw=function(){var width=docEl.getBoundingClientRect().width;var fz=Math.min(width,maxWidth)/relWinth*relFontSize;docEl.style.fontSize=fz+"px"};if(isMobile){window.addEventListener("resize",function(){clearTimeout(tid);tid=setTimeout(redraw,300)},false);redraw()}else{docEl.style.fontSize="16px"}})(375,16);
+    </script>
+    <!-- build:css /styles/index.css-->
     <link rel="stylesheet" type="text/css" href="/styles/main.css">
     <!-- endbuild-->
 </head>
 <body>
-hello ymtapp
+    <section class="settle-container  ng-cloak" ng-controller="settle.app.controller.index">
+        <!--收件地址-->
+        <address class="address-wrapp ng-cloak" ng-click="openAddress()" ng-if="orderInfo.Orders">
+            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0]" ng-init="address = orderInfo.Orders[0].Address" >收件人 : {{address.Addressee}} <span class="fr">{{address.Mobile}}</span></h3>
+            <div ng-if="orderInfo.Orders && orderInfo.Orders[0]"  ng-init="address = orderInfo.Orders[0].Address">
+                {{address.Area}} {{address.DetailAddress}}
+            </div>
+            <div class="add-address" ng-if="!(orderInfo.Orders && orderInfo.Orders[0])">
+                点击新增收货地址
+            </div>
+            <i class="icon-arrow-right"></i>
+        </address>
+        <div class="customs-wrapper ng-cloak" ng-if="!isUploadIdCard && hasBonded">
+            <div class="customs-title-wrapper">
+            <!-- statue change: fixed-->
+                <div class="customs-title " overflow-fixed="fixed">
+                    <i class="icon-customs"></i> 海关提示:购买保税商品需要提供收货人身份证号码
+                </div>
+            </div>
+            <div class="customs-input error">
+                <input type="number" name="" value="" placeholder="请输入收货人的身份证号码">
+                <p class="msg-text">请输入收货人的身份证号码</p>
+            </div>
+        </div>
+        <!--商品列表-->
+        <div class="buyer-list-wrapp ng-cloak" disabled-scroll>
+            <div class="buyer-item" ng-repeat="i in orderInfo.Orders">
+                <div class="buyer-item-hd">
+                    <strong>{{i.SellerName}}</strong>
+                </div>
+                <ul class="buyer-item-bd pro-list">
+                    <li ng-repeat="p in i.Products">
+                        <div class="pic">
+                            <div class="pic-carrier" ng-style="{'background-image':'url('+p.PictureUrl+')'}">
+
+                            </div>
+                        </div>
+                        <div class="info">
+                            <h4>{{p.ProductName}}</h4>
+                            <p ng-if="p.CatalogPropertyList && p.CatalogPropertyList[0]">商品规格：<b ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.PropertyAttribute}}</b></p>
+                            <p>
+                                <span class="pro-flag local-return" ng-if=""><i class="icon-local-return"></i>本土退货</span>
+                                <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==5"><i class="icon-beihai-bonded"></i>贝海保税</span>
+                                <span class="pro-flag xloboBoned" ng-if="product.CatalogStatus==3&&!product.IsPurchasingOrder || product.CatalogStatus==1"> <i class="icon-beihai-directMail"></i>贝海直邮</span>
+                                <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==4"> <i class="icon-beihai-directMail"></i>第三方认证保税</span></p>
+                            <div class="attr">
+                                <strong>&yen;{{p.QuotePrice}}</strong>
+                                <del>&yen;{{p.OriginPrice}}</del>
+                            </div>
+                            <span class="num">x{{p.ProductNumber}}</span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="buyer-ft">
+                    <!--优惠-->
+                    <div class="discount-wrapper ng-cloak" ng-if="i.Promotion.CanUseCoupon||i.Promotion.CanUseGift||i.Promotion.CanUseFreeCard">
+                        <div class="discount-hd">
+                            我使用的优惠
+                            <span class="">使用优惠: <strong>{{i.useDiscount || '未选择优惠方式'}}</strong></span>
+                        </div>
+                        <ol class="discount-list" ng-init="canUseGift(i)">
+                            <!--statuc change : disabled-->
+                            <li ng-if="i.Promotion.CanUseCoupon" ng-click="openUserCoupon(i)">
+                                <!--statuc change : selected-->
+                                <label ng-click=""><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && !i.PromotionUsed.inputCouponCode}"></i></label>使用优惠券
+                                <i class="icon-arrow-right"></i>
+                            </li>
+                            <li ng-if="i.Promotion.CanUseCoupon" ng-click="openInputCoupon(i)">
+                                <label><i class="icon-checkBox" ng-class="{selected:i.PromotionUsed.inputCouponCode}"></i></label>输入优惠券编码
+                                <i class="icon-arrow-right"></i>
+                            </li>
+                            <li ng-if="i.Promotion.CanUseGift" ng-class="{'disabled':i.usedGift==0}" ng-click="useGift(i)">
+                                <label><i class="icon-checkBox" ng-class="{selected:i.PromotionUsed.UseGiftAmount}"></i></label>使用红包
+                                <small>订单可使用最大的红包数 <strong>&yen;{{i.usedGift}}</strong></small>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- <div class="settle-count">
+                        <span>商品数量: 2 </span><span>含运费:&yen;100</span><span>合计：</span><strong>&yen;1555</strong>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+<!--         <div class="protocol">
+     <label><i class="icon-checkBox-selected"></i></label> 我已同意 <b>《进口个人委托申报委托》</b>
+</div> -->
+        <div class="settle-tools-wrapper">
+            <div class="settle-tools">
+                <div class="text">
+                    <div>
+                        共计 {{productNumber}} 件商品,合计:<strong>&yen;{{orderInfo.TotalPrice}}</strong>
+                    </div>
+                    <div>
+                        <small>含运费: &yen;{{orderInfo.TotalFreight}} 优惠扣除: -&yen;100 </small>
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="button" ng-click="saveOrder()">立即购买</button>
+            </div>
+        </div>
+
+        <div class="dialog-mask ng-cloak" ng-if="maskOpen" ng-click="closeMask()"></div>
+        <div class="dialog ng-cloak" ng-class="{open:inputCouponOpen}">
+            <div class="dialog-content">
+                <div class="title">
+                    输入优惠券
+                </div>
+                <div class="input-group">
+                    <input class="inp" type="text" name="" value="" ng-model="coupon.code">
+                </div>
+                <div class="btn-group">
+                    <div>
+                        <button class="btn" type="button" ng-click="closeMask()">取消</button>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" type="button" ng-click="confirmInputCoupon()">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dialog ng-cloak" ng-class="{open:couponOpen}">
+            <div class="dialog-content">
+                <div class="title">
+                    我的优惠券
+                </div>
+                <div class="beat-loading" ng-if="couponLoading"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>
+                <ul class="my-discount-list">
+                    <!--statuc change: disabled-->
+                    <li class="my-discount-item" ng-repeat="i in couponsList" ng-click="selectCoupon(i)">
+                        <h3>满{{i.CouponOrderValue}}{{(i.UseType==1?"抵":"返")}}{{i.CouponValue}}</h3>
+                        <p>有效期至 {{i.ValidEnd}}</p>
+                        <p>编号: {{i.CouponCode}}</p>
+                    </li>
+                </ul>
+                <div class="my-discount-msg" ng-if="!couponLoading && !(couponsList&&couponsList.length)">没有可使用的优惠券~~</div>
+            </div>
+        </div>
+        <div class="address-mask-fix ng-cloak" ng-class="{open:!!addressState}" ng-click="closeAddressState()" disabled-scroll="">
+            <div class="address-mask-close">
+                <i class="icon-arrow-right"></i>
+            </div>
+        </div>
+
+        <!--地址管理-->
+        <div class="pt-page address-edit-wrapper ng-cloak" switch-page="addressState == 1">
+            <div class="address-edit-inner">
+                <ul class="address-edit-list">
+                 <!-- <li ng-repeat1="add in AddressService.list | orderBy:'AddressId'" ng-class="{selected:add.IsDefault}" ng-click="editAddress(add.AddressId)" class="ng-scope">
+                         <label ng-click="setDefault(add)"><i class="icon-checkBox-selected2"></i></label>
+                        <div class="text-area" ng-click="editAddress(add.AddressId)">
+                            <h5 class="ng-binding">你你 13122222222</h5>
+                            <div class="ng-binding">
+                                上海市,上海市,普陀区 嘀嗒
+                            </div>
+                            <i class="icon-arrow-right"></i>
+                        </div>
+
+                    </li> -->
+                    <li ng-repeat="add in AddressService.list | orderBy:'AddressId'" ng-class="{selected:add.IsDefault}" ng-click="editAddress(add.AddressId)">
+                         <label ng-click="setDefault(add)"><i class="icon-checkBox-selected2" ></i></label>
+                        <div class="text-area"  ng-click="editAddress(add.AddressId)">
+                            <h5>{{add.Recipient}} {{add.Mobile}}</h5>
+                            <div>
+                                {{add.Address1}} {{add.Details}}
+                            </div>
+                            <i class="icon-arrow-right"></i>
+                        </div>
+
+                    </li>
+
+                </ul>
+                <div class="btn-group">
+                    <button class="btn btn-full">新增地址</button>
+                </div>
+            </div>
+        </div>
+        <!---->
+        <div class="pt-page address-edit-wrapper ng-cloak" switch-page="addressState == 2">
+            <div class="address-edit-inner">
+                <div class="address-form">
+                    <p class="input-group">
+                        <input type="text" value="" ng-model="AddressService.item.Recipient" placeholder="收货人"></p>
+                    <p class="txt_msg">请务必填写真实的收货人姓名，海关清关时将核对姓名</p>
+                    <p class="input-group">
+                        <input type="text" value="" ng-model="AddressService.item.Mobile" placeholder="手机号码"></p>
+                        <p class="input-group three-section">
+                         <span class="">
+                            <select ng-model="AddressService.item.ProvinceName" ng-options="act.name as act.name for act in AddressService.cityObj[0]" ng-change="AddressService.selectCity()" >
+                                <option value="">选择省份</option>
+                            </select>
+                        </span>
+                        <span class="">
+                            <select ng-model="AddressService.item.CityName" ng-options="act.name as act.name for act in AddressService.selectCityObj" ng-change="AddressService.areaCity()" >
+                                <option value="" >选择城市</option>
+                            </select>
+                        </span>
+                        <span class="">
+                            <select ng-model="AddressService.item.DistrictName" ng-options="act.name as act.name for act in AddressService.selectDistrictObj">
+                                <option value="">选择县区</option>
+                            </select>
+                        </span>
+                    </p>
+                    <p class="input-group">
+                        <input type="text" value="" ng-model="AddressService.item.Details" placeholder="详细地址"/></p>
+                    <p class="input-group">
+                        <input type="text" value="" ng-model="AddressService.item.PostCode" placeholder="邮政编号"/></p>
+                    <p class="input-group"  ng-if="!AddressService.hasEmail">
+                        <input type="email" value="" ng-model="AddressService.item.Email" placeholder="电子邮件地址（e-mail）"/></p>
+                    <p class="input-group selectDefault">
+                        <label class="label" ng-click="AddressService.item.IsDefault = !AddressService.item.IsDefault">
+                        <i class="icon-checkBox-selected2" ng-class="{'selected':AddressService.item.IsDefault}" ></i>
+                        设置为默认收货地址</label>
+                    </p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-full" ng-click="saveAddress()">保存</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w, d, s, l, i, o) {
+          w['YmatouAnalyticsobject'] = o;
+          w[o] = w[o] || function () {
+            (w[o].q = w[o].q || []).push(arguments)
+          }
+
+          w[l] = w[l] || [];
+          w[l].push({
+            'gtm.start': new Date().getTime(),
+            event: 'gtm.js'
+          });
+          var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != 'dataLayer' ? '&l=' + l : '';
+          j.async = true;
+        j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl;
+        f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-P26VLJ', '_dc_');
+    </script>
+    <!-- End Google Tag Manager -->
+    <script type="text/javascript" src="http://static.matouapp.ymatou.com/js/ymtApi.2015101901.js?wxAutoInit=1"></script>
+    <!-- build:js /styles/vendor/zepto.js,angular.js -->
+    <script src="/scripts/vendor/zepto.min.js"></script>
+    <!-- endbuild -->
+    <script src="/scripts/vendor/angular.min.js"></script>
+    <!-- build:js /styles/settle.app-min.js -->
+    <script src="/scripts/settle.app.js"></script>
+    <!-- endbuild -->
 </body>
 </html>

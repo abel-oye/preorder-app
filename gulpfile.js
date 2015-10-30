@@ -19,8 +19,6 @@ var _del = require('del');
 
 var _del2 = _interopRequireDefault(_del);
 
-var _wiredep = require('wiredep');
-
 var $ = (0, _gulpLoadPlugins2['default'])();
 var reload = _browserSync2['default'].reload;
 
@@ -28,7 +26,8 @@ var config = {
     src: 'public/', //源文件路径
     dist: 'dist/', //静态资源产物路径
     view: 'views/', //页面路径
-    viewOut: 'app/views/', //页面处理之后路径
+    viewOut: 'app/views', //页面处理之后路径
+    staticPath: 'http://staitc.settle.app.ymatou.com/', //静态站点host
     cssSrc: ['public/{styles,css}/{,*/}*.scss', '!public/{styles,css}/_*/*']
 };
 
@@ -66,14 +65,18 @@ _gulp2['default'].task('html', ['styles'], function () {
         searchPath: ['.tmp', config.src]
     });
 
+    var excludeHtml = $.filter(['!*.html'], {
+        restore: true
+    });
+
     return _gulp2['default'].src(config.view + '{,*/}*.html').pipe(assets).pipe($.rev()).pipe($['if']('*.js', $.uglify())).pipe($['if']('*.css', $.minifyCss({
         compatibility: '*'
     }))).pipe(assets.restore()).pipe($.useref()).pipe($.revReplace({
-        prefix: 'http://static.settle.app.ymatou.com'
-    })).pipe($['if']('*.html', $.minifyHtml({
+        prefix: config.staticPath
+    })).pipe(excludeHtml).pipe(_gulp2['default'].dest(config.dist)).pipe(excludeHtml.restore).pipe($.filter(['*.html'])).pipe($.minifyHtml({
         conditionals: true,
         loose: true
-    }))).pipe(_gulp2['default'].dest(config.dist));
+    })).pipe(_gulp2['default'].dest(config.viewOut));
 });
 
 _gulp2['default'].task('images', function () {
@@ -120,7 +123,6 @@ _gulp2['default'].task('serve', ['styles', 'fonts'], function () {
 
     _gulp2['default'].watch(config.src + 'styles/**/*.scss', ['styles']);
     _gulp2['default'].watch(config.src + 'fonts/**/*', ['fonts']);
-    _gulp2['default'].watch('bower.json', ['wiredep', 'fonts']);
 });
 
 _gulp2['default'].task('serve:dist', function () {
@@ -150,15 +152,8 @@ _gulp2['default'].task('serve:test', function () {
     _gulp2['default'].watch('test/spec/**/*.js', ['lint:test']);
 });
 
-// inject bower components
-_gulp2['default'].task('wiredep', function () {
-    _gulp2['default'].src(config.src + 'styles/{**,*}.scss').pipe((0, _wiredep.stream)({
-        ignorePath: /^(\.\.\/)+/
-    })).pipe(_gulp2['default'].dest(config.src + 'styles'));
-
-    _gulp2['default'].src(config.view + '{,*/}*.html').pipe((0, _wiredep.stream)({
-        ignorePath: /^(\.\.\/)*\.\./
-    })).pipe(_gulp2['default'].dest(config.viewOut));
+_gulp2['default'].task('copy:html', function () {
+    _gulp2['default'].src(config.dist + '{**,*}/*.html').pipe(_gulp2['default'].dest(config.viewOut));
 });
 
 _gulp2['default'].task('rev', function () {
@@ -167,7 +162,7 @@ _gulp2['default'].task('rev', function () {
 
 _gulp2['default'].task('build', ['lint', 'images', 'fonts', 'extras', 'html'], function () {
     return _gulp2['default'].src(config.dist + '**/*').pipe($.size({
-        title: 'build',
+        title: '构建项目',
         gzip: true
     })).on('end', function () {
         _gulp2['default'].start('rev');

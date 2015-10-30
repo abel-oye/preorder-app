@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+@import "./variables.scss";
+
+//基础按钮
+.btn{
+  display: inline-block;
+  padding: $rem * 6 .9375em;
+  margin-bottom: 0;
+  font-weight: 400;
+  line-height: 1rem/16*17;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  background-image: none;
+  border: 0;
+}
+
+//主色
+$primary-color:#ff6c6c;
+$primary-active-color:#ff6c6c;
+
+//主色按钮
+.btn-primary{
+  background-color: $primary-color;
+  color:#fff;
+  border-color:$primary-color;
+  &:active{
+    background-color:$primary-active-color;
+  }
+}

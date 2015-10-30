@@ -12,6 +12,26 @@ static通过gulp来构建。
 ```javascript
 babel gulpfile.babel.js -o gulpfile.js
 ```
+# Run
+静态资源开发
+```javascript
+    gulp serve
+```
+node站点开发
+```
+    supervisor app.js
+```
+如果没有安装supervisor 可以使用node
+也可以
+```javascript
+    npm install -g supervisor
+```
+
+## Release
+
+```javascript
+    gulp build 
+```
 
 ## History
     * 2015-10-27 创建项目 
