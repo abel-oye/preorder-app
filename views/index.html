@@ -20,9 +20,9 @@
     <section class="settle-container  ng-cloak" ng-controller="settle.app.controller.index">
         <!--收件地址-->
         <address class="address-wrapp ng-cloak" ng-click="openAddress()" ng-if="orderInfo.Orders">
-            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0]" ng-init="address = orderInfo.Orders[0].Address" >收件人 : {{address.Addressee}} <span class="fr">{{address.Mobile}}</span></h3>
-            <div ng-if="orderInfo.Orders && orderInfo.Orders[0]"  ng-init="address = orderInfo.Orders[0].Address">
-                {{address.Area}} {{address.DetailAddress}}
+            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0]" >收件人 : {{orderInfo.Orders[0].Address.Addressee}} <span class="fr">{{orderInfo.Orders[0].Address.Mobile}}</span></h3>
+            <div ng-if="orderInfo.Orders && orderInfo.Orders[0]" >
+                {{orderInfo.Orders[0].Address.Area}} {{orderInfo.Orders[0].Address.DetailAddress}}
             </div>
             <div class="add-address" ng-if="!(orderInfo.Orders && orderInfo.Orders[0])">
                 点击新增收货地址
@@ -31,14 +31,14 @@
         </address>
         <div class="customs-wrapper ng-cloak" ng-if="!isUploadIdCard && hasBonded">
             <div class="customs-title-wrapper">
-            <!-- statue change: fixed-->
+            <!-- status change: fixed-->
                 <div class="customs-title " overflow-fixed="fixed">
                     <i class="icon-customs"></i> 海关提示:购买保税商品需要提供收货人身份证号码
                 </div>
             </div>
-            <div class="customs-input error">
-                <input type="number" name="" value="" placeholder="请输入收货人的身份证号码">
-                <p class="msg-text">请输入收货人的身份证号码</p>
+            <div class="customs-input" ng-class="{error:idCardError}">
+                <input type="text" ng-model="idCard.no" name="" value="" placeholder="请输入收货人的身份证号码">
+                <p class="msg-text ng-cloak">请输入收货人的身份证号码</p>
             </div>
         </div>
         <!--商品列表-->
@@ -78,9 +78,9 @@
                             <span class="">使用优惠: <strong>{{i.useDiscount || '未选择优惠方式'}}</strong></span>
                         </div>
                         <ol class="discount-list" ng-init="canUseGift(i)">
-                            <!--statuc change : disabled-->
+                            <!--stauts change : disabled -->
                             <li ng-if="i.Promotion.CanUseCoupon" ng-click="openUserCoupon(i)">
-                                <!--statuc change : selected-->
+                                <!--stauts change : selected-->
                                 <label ng-click=""><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && !i.PromotionUsed.inputCouponCode}"></i></label>使用优惠券
                                 <i class="icon-arrow-right"></i>
                             </li>
@@ -108,10 +108,10 @@
             <div class="settle-tools">
                 <div class="text">
                     <div>
-                        共计 {{productNumber}} 件商品,合计:<strong>&yen;{{orderInfo.TotalPrice}}</strong>
+                        共计 {{productNumber || 0}} 件商品,合计:<strong>&yen;{{orderInfo.TotalPrice || 0}}</strong>
                     </div>
                     <div>
-                        <small>含运费: &yen;{{orderInfo.TotalFreight}} 优惠扣除: -&yen;100 </small>
+                        <small>含运费: &yen;{{orderInfo.TotalFreight || 0 }} 优惠扣除: -&yen;{{discountPrice || 0}} </small>
                     </div>
                 </div>
                 <button class="btn btn-primary" type="button" ng-click="saveOrder()">立即购买</button>
@@ -119,6 +119,7 @@
         </div>
 
         <div class="dialog-mask ng-cloak" ng-if="maskOpen" ng-click="closeMask()"></div>
+        <!--输入优惠券-->
         <div class="dialog ng-cloak" ng-class="{open:inputCouponOpen}">
             <div class="dialog-content">
                 <div class="title">
@@ -126,6 +127,30 @@
                 </div>
                 <div class="input-group">
                     <input class="inp" type="text" name="" value="" ng-model="coupon.code">
+                </div>
+                <div class="btn-group">
+                    <div>
+                        <button class="btn" type="button" ng-click="closeMask()">取消</button>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" type="button" ng-click="confirmInputCoupon()">确定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--绑定优惠券-->
+        <div class="dialog ng-cloak open" ng1-class="{open:inputCouponOpen}">
+            <div class="dialog-content">
+                <div class="title">
+                    验证手机号码
+                </div>
+                <div class="input-group">
+                    <input class="inp" type="text" name="" value="" ng-model="coupon.code" placeholder="手机号码">
+                </div>
+                <p class="assist-msg">手机验证后将与您的账号绑定，请使用您本人的手机号码</p>
+                <div class="input-group vliadCode">
+                    <input class="inp" type="number" name="" value="" ng-model="coupon.validCode" placeholder="输入验证码" maxlength="6">
+                    <button class="btn" ng-class="{'btn-primary':coupon.btnStatus}" type="button" ng-click="resend()">{{conpon.btnTxt || '发送验证码'}}</button>
                 </div>
                 <div class="btn-group">
                     <div>
@@ -175,7 +200,7 @@
                         </div>
 
                     </li> -->
-                    <li ng-repeat="add in AddressService.list | orderBy:'AddressId'" ng-class="{selected:add.IsDefault}" ng-click="editAddress(add.AddressId)">
+                    <li ng-repeat="add in AddressService.list | orderBy:'AddressId'" ng-class="{selected:add.IsDefault}">
                          <label ng-click="setDefault(add)"><i class="icon-checkBox-selected2" ></i></label>
                         <div class="text-area"  ng-click="editAddress(add.AddressId)">
                             <h5>{{add.Recipient}} {{add.Mobile}}</h5>
@@ -189,7 +214,7 @@
 
                 </ul>
                 <div class="btn-group">
-                    <button class="btn btn-full">新增地址</button>
+                    <button class="btn btn-full" ng-click="insterAddress()">新增地址</button>
                 </div>
             </div>
         </div>
@@ -223,8 +248,8 @@
                         <input type="text" value="" ng-model="AddressService.item.Details" placeholder="详细地址"/></p>
                     <p class="input-group">
                         <input type="text" value="" ng-model="AddressService.item.PostCode" placeholder="邮政编号"/></p>
-                    <p class="input-group"  ng-if="!AddressService.hasEmail">
-                        <input type="email" value="" ng-model="AddressService.item.Email" placeholder="电子邮件地址（e-mail）"/></p>
+                    <!-- <p class="input-group"  ng-if="!AddressService.hasEmail">
+                        <input type="email" value="" ng-model="AddressService.item.Email" placeholder="电子邮件地址（e-mail）"/></p> -->
                     <p class="input-group selectDefault">
                         <label class="label" ng-click="AddressService.item.IsDefault = !AddressService.item.IsDefault">
                         <i class="icon-checkBox-selected2" ng-class="{'selected':AddressService.item.IsDefault}" ></i>
@@ -260,11 +285,11 @@
     </script>
     <!-- End Google Tag Manager -->
     <script type="text/javascript" src="http://static.matouapp.ymatou.com/js/ymtApi.2015101901.js?wxAutoInit=1"></script>
-    <!-- build:js /styles/vendor/zepto.js,angular.js -->
+    <!-- build:js /scripts/vendor/zepto.js,angular.js -->
     <script src="/scripts/vendor/zepto.min.js"></script>
     <!-- endbuild -->
     <script src="/scripts/vendor/angular.min.js"></script>
-    <!-- build:js /styles/settle.app-min.js -->
+    <!-- build:js /scripts/settle.app-min.js -->
     <script src="/scripts/settle.app.js"></script>
     <!-- endbuild -->
 </body>

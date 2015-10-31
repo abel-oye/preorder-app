@@ -65,7 +65,7 @@ _gulp2['default'].task('html', ['styles'], function () {
         searchPath: ['.tmp', config.src]
     });
 
-    var excludeHtml = $.filter(['!*.html'], {
+    var excludeHtml = $.filter(['*', '!*.{html}'], {
         restore: true
     });
 
@@ -73,7 +73,11 @@ _gulp2['default'].task('html', ['styles'], function () {
         compatibility: '*'
     }))).pipe(assets.restore()).pipe($.useref()).pipe($.revReplace({
         prefix: config.staticPath
-    })).pipe(excludeHtml).pipe(_gulp2['default'].dest(config.dist)).pipe(excludeHtml.restore).pipe($.filter(['*.html'])).pipe($.minifyHtml({
+    }))
+    //.pipe(excludeHtml)
+    .pipe(_gulp2['default'].dest(config.dist))
+    //.pipe(excludeHtml.restore)
+    .pipe($.filter('*.html')).pipe($.minifyHtml({
         conditionals: true,
         loose: true
     })).pipe(_gulp2['default'].dest(config.viewOut));

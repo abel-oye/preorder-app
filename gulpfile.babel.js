@@ -63,7 +63,7 @@ gulp.task('html', ['styles'], () => {
         searchPath: ['.tmp', config.src ]
     });
 
-    const excludeHtml = $.filter(['!*.html'],{
+    const excludeHtml = $.filter(['*','!*.{html}'],{
         restore:true
     });
 
@@ -79,9 +79,9 @@ gulp.task('html', ['styles'], () => {
         .pipe($.revReplace({
             prefix:config.staticPath
         }))
-        .pipe(excludeHtml)
+        //.pipe(excludeHtml)
         .pipe(gulp.dest(config.dist))
-        .pipe(excludeHtml.restore)
+        //.pipe(excludeHtml.restore)
         .pipe($.filter('*.html'))
         .pipe($.minifyHtml({
             conditionals: true,

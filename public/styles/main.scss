@@ -97,7 +97,8 @@ body{
         width:100%;
         color:#686868;
         border:1px solid #9b9b9b;
-        font-size:$rem*42;
+        font-size:$rem*38;
+        border-radius:$rem*8;
     }
     .msg-text{
         color:#cc3333;
@@ -422,7 +423,25 @@ body{
             width:100%;
             border:1px solid #cecece;
             height:$rem*80;
+            padding:$rem*21 $rem*24;
+            color:#646464;
         }
+        &.vliadCode{
+            text-align:left;
+            &>input{
+                width:$rem*250;
+            }
+            .btn{
+                height:$rem*80;
+                color:#fff;
+                padding:0 $rem*50;
+                font-size:$rem*30;
+            }
+        }
+    }
+    .assist-msg{
+        font-size:$rem*24;
+        color:#9b9b9b;
     }
     .btn-group{
         overflow:hidden;
@@ -440,10 +459,6 @@ body{
                 height:$rem*84;
                 font-size:$rem*35;
                 color:#fff;
-                background-color: #CECECE;
-            }
-            .btn-primary{
-                background:$price-color;
             }
         }
     }

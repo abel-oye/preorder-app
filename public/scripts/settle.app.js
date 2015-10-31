@@ -59,7 +59,7 @@
         'ymtUI',
         function ($scope, $http, IdCardValidate, AddressService, ymtUI) {
 
-            var jsApiHost = 'http://172.16.2.97:8080';
+            var jsApiHost = 'http://jsapi.preorder.ymatou.com';
 
             var safeApply = function (fn) {
                 ($scope.$$phase || $scope.$root.$phase) ? fn(): $scope.$apply(fn);
@@ -90,6 +90,9 @@
                         var result = data.Data;
 
                         $scope.orderInfo = result;
+
+                        //保存原价
+                        $scope.originalTotal = result.TotalPrice;
 
                         hasBonded(result.Orders);
 
@@ -122,11 +125,13 @@
                 }
                 var address = $scope.orderInfo.Orders[0].Address;
 
-                data4jsonp(jsApiHost + '/api/idCardManage/IdCardExistInYmt?callback=JSON_CALLBACK')
+                data4jsonp(jsApiHost + '/api/IdCardManage/CheckIsNeedUploadIdCard?callback=JSON_CALLBACK')
                     .success(function (ret, code) {
+                        //1不用上传，2必须下单前上传，3可下单后上传
                         if (code == 200) {
+                            var result =ret.Data.result;
                             safeApply(function () {
-                                $scope.isUploadIdCard = ret.Result;
+                                $scope.isUploadIdCard = result == 2;
                             });
                         }
                         else {
@@ -143,11 +148,28 @@
                 var isBonded, i = 0,
                     len = orders.length;
                 for (; i < len; i++) {
-                    if (orders[i].BondedArea == 3) {
+                    //验证是否存在杭保订单
+                    if (orders[i].BondedArea != 3) {
                         $scope.hasBonded = true;
                         break;
                     }
                 }
+            }
+
+            /**
+             * 计算优惠金额
+             */
+            function acountDiscount(){
+                var total = 0,
+                    ordersList = $scope.orderInfo.Orders,
+                    i =0 ,
+                    len = ordersList.length;
+                for(;i<len;i++){
+                    total = parseFloat(total) + parseInt(ordersList[i].PromotionUsed && ordersList[i].PromotionUsed.UseCouponAmount || 0) + (ordersList[i].freeCard || 0);
+                }
+
+                $scope.discountPrice = total;
+                $scope.ordersList.TotalPrice = ($scope.originalTotal - total).toFixed(2);
             }
 
             $scope.maskOpen = false;
@@ -203,6 +225,8 @@
 
                 currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
 
+                acountDiscount();
+
                 $scope.closeMask();
             }
 
@@ -233,6 +257,8 @@
                 currProdcut.PromotionUsed.UseCouponAmount = parseInt(coupon.Type == 1 ? coupon.Value : 0, 10);
 
                 currProdcut.useDiscount = coupon.Type == 1 ? '本单抵扣' + coupon.Value + '元' : '账户返' + coupon.Value + '元红包';
+
+                acountDiscount();
             }
 
             //确认输入优惠券
@@ -302,6 +328,8 @@
                 product.PromotionUsed.UseGiftAmount = product.usedGift;
 
                 product.useDiscount = '￥' + product.usedGift + '红包';
+
+                acountDiscount();
             }
 
 
@@ -350,6 +378,7 @@
                     checkIdCardExistInYmt();
                 }
 
+
             }
 
             /**
@@ -357,12 +386,19 @@
              */
             $scope.setDefault = function (address) {
                 AddressService.setDefault(address, function () {
-                    changeOrderAddress(address);
-                    AddressService.queryAddressList();
-                    checkIdCardExistInYmt();
+                    toast('修改成功');
+                    safeApply(function(){
+                        changeOrderAddress(address);
+                    });
+                    //AddressService.queryAddressList();
+                    switchAddressState(0)
                 });
             }
 
+            /**
+             * 切换地址处理状态
+             * @param  {number} state 0 是退出 1 选择列表 2 修改地址 3新增
+             */
             var switchAddressState = function (state) {
                 safeApply(function () {
                     $scope.addressState = state;
@@ -384,7 +420,7 @@
             $scope.saveAddress = function(){
                 AddressService.saveAddress(AddressService.item,function(result){
                     toast('修改成功');
-                    $scope.switchAddressState(1);
+                    switchAddressState(1);
                     AddressService.queryAddressList();
                     if(result && result.AddressId){
                         AddressService.item.addressId = result.AddressId;
@@ -393,10 +429,31 @@
                 });
             }
 
+            $scope.insterAddress = function(){
+                AddressService.item = {};
+                switchAddressState(2);
+            }
+
             var isSubmint = false,
                 isPay = false;
 
             $scope.saveOrderIng = false;
+            $scope.idCard = {
+                no:''
+            }
+            /**
+             * 校验身份证号码
+             */
+            $scope.validateIdcard = function(isTips){
+                if(!$scope.idCard.no || !IdCardValidate.validate(''+$scope.idCard.no)){
+                    $scope.idCardError = true;
+                    !isTips && toast('收货人身份证号码格式错误,请重新输入');
+                    return false;
+                }
+                $scope.idCardError = false;
+                return true;
+            }
+
 
             /**
              * 保存订单
@@ -430,8 +487,8 @@
                 $scope.idCardError = false;
 
                 data4jsonp(jsApiHost + '/api/idCardManage/saveIdCardNumber', {
-                    Name: orders[0].Address.Addressee,
-                    Phone: orders[0].Address.Mobile,
+                    Name: orderList[0].Address.Addressee,
+                    Phone: orderList[0].Address.Mobile,
                     CardId: $scope.idCard.no
                 }).success(function (ret, code) {
                     if (code == 200) {
@@ -439,7 +496,7 @@
                             toSave();
                         }
                         else {
-                            prompt('保存身份证信息失败');
+                            toast('保存身份证信息失败');
                         }
 
                     }
@@ -729,7 +786,7 @@
         'ymtUI',
         function ($http, $window, ymtUI) {
 
-            var jsApiHost = 'http://172.16.2.97:8080';
+            var jsApiHost = 'http://jsapi.preorder.ymatou.com';
 
             var addressService = {
                 list: [],
@@ -907,8 +964,6 @@
                     url = 'editAddress';
                 }
 
-                console.log(obj)
-
                 if (!obj) {
                     toast('请填写收货人信息');
                     return false;
@@ -942,12 +997,12 @@
                     toast('邮政编码只能是数字');
                     return false;
                 }
-                if (!addressService.hasEmail && !(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(obj.Email))) {
+                /*if (!addressService.hasEmail && !(/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(obj.Email))) {
                     toast('邮箱地址不正确');
                     return false;
-                }
+                }*/
 
-                data4jsonp(jsApiHost+'/api/address/editaddress', {
+                data4jsonp(jsApiHost+'/api/address/'+url, {
                     params:JSON.stringify(obj)
                 }).success(function (ret) {
                     if(ret.Code == 200){
@@ -987,7 +1042,7 @@ app.directive('overflowFixed', ['$window',
         return {
             restrict: 'A',
             link: function (scope, ele) {
-                var $ele=$(ele),
+                var $ele=$(ele[0]),
                     top = $ele.offset().top,
                     height = $ele.height(),
                     clsName = ele.overflowFixed;

@@ -18,17 +18,19 @@
   -ms-user-select: none;
   background-image: none;
   border: 0;
+  background-color:#CECECE;
+
 }
 
 //主色
-$primary-color:#ff6c6c;
-$primary-active-color:#ff6c6c;
+$primary-color:#C33;
+$primary-active-color:#C33;
 
 //主色按钮
 .btn-primary{
   background-color: $primary-color;
   color:#fff;
-  border-color:$primary-color;
+  border:0;
   &:active{
     background-color:$primary-active-color;
   }
