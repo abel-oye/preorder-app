@@ -57,7 +57,8 @@
         'IdCardValidate',
         'AddressService',
         'ymtUI',
-        function ($scope, $http, IdCardValidate, AddressService, ymtUI) {
+        '$timeout',
+        function ($scope, $http, IdCardValidate, AddressService, ymtUI,$timeout) {
 
             var jsApiHost = 'http://jsapi.preorder.ymatou.com';
 
@@ -174,7 +175,7 @@
 
             $scope.maskOpen = false;
             $scope.couponOpen = false;
-            $scope.inputCouponOpen = false;
+            $scope.validateStep = 0;
 
             $scope.couponLoading = true;
 
@@ -232,7 +233,7 @@
 
             //打开输入优惠券
             $scope.openInputCoupon = function (order) {
-                $scope.inputCouponOpen = true;
+                $scope.validateStep = 1;
                 $scope.maskOpen = true;
                 $scope.coupon.code = '';
 
@@ -241,12 +242,14 @@
 
             var currCoupon = {
 
-            }
+            },couponInfo;
 
             //优惠券对象，主要存储code
-            $scope.coupon = {}
+            $scope.coupon = {
+                btnStatus:false
+            }
 
-            var confirmCoupon = function (coupon) {
+            var confirmCoupon = function () {
                 currProdcut.PromotionUsed = {};
 
                 currProdcut.PromotionUsed.UseCouponCode = $scope.coupon.code;
@@ -254,9 +257,9 @@
                 //重置红包
                 currProdcut.PromotionUsed.UseGiftAmount = 0;
 
-                currProdcut.PromotionUsed.UseCouponAmount = parseInt(coupon.Type == 1 ? coupon.Value : 0, 10);
+                currProdcut.PromotionUsed.UseCouponAmount = parseInt(couponInfo.Type == 1 ? couponInfo.Value : 0, 10);
 
-                currProdcut.useDiscount = coupon.Type == 1 ? '本单抵扣' + coupon.Value + '元' : '账户返' + coupon.Value + '元红包';
+                currProdcut.useDiscount = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
 
                 acountDiscount();
             }
@@ -293,9 +296,9 @@
                         if (data.Status == 0) {
                             return toast(ret.Msg || '您输入的优惠码不正确或不能使用');
                         }
-
+                        couponInfo = data.Coupon;
                         if (data.Status == 1) {
-                            confirmCoupon(data.Coupon)
+                            confirmCoupon()
                             $scope.closeMask();
                         }
                         else if (data.Status == 2) {
@@ -309,11 +312,94 @@
 
                 });
             }
+            //验证手机号码
+            var validatePhoneNumber = function () {
+                var phone = $scope.phoneNumber;
+                //验证是否为空
+                if (phone == '') {
+                    toast('手机号码不能为空,请重新输入');
+                    return false;
+                }
+                if (!/^1[3|4|5|8][0-9]\d{8}$/.test(phone)) {
+                    toast('手机号码有误，请重新输入');
+                    return false;
+                }
+                return true;
+            };
+
+            //获得验证码
+            $scope.resend = function () {
+                if ($scope.btnStatus) {
+                    return;
+                }
+
+                if (!validatePhoneNumber()) {
+                    return;
+                }
+
+                $scope.coupon.btnStatus = true;
+
+                var countDown = function (time) {
+                   $scope.coupon.btnTxt = time + 's后重发';
+                    if (time--) {
+                        $timeout(function () {
+                            countDown(time)
+                        }, 1000);
+                    }
+                    else {
+                       $scope.coupon.btnTxt = '重新发送';
+                    }
+                };
+
+                countDown(60);
+
+                data4jsonp(jsApiHost + '/api/sendBindMobileValidateCode', {
+                    Phone: $scope.phoneNumber
+                }).success(function (result) {
+                   $scope.coupon.btnStatus = false;
+                    if (result.Code != 200) {
+                        return toast(result.Msg || '发送失败');
+                    }
+                    else {
+                        toast('验证码已发送，请查收短信');
+                        countDown(60);
+                    }
+                });
+
+
+            };
+            //完成验证
+            $scope.completeValidate = function () {
+                var validateCode = $scope.validateCode;
+                if (!validateCode || $scope.isComplete) {
+                    return;
+                }
+                if (!validatePhoneNumber()) {
+                    return;
+                }
+                $scope.isComplete = true;
+
+                data4jsonp(jsApiHost + '/api/bindMobile', {
+                    Phone: $scope.phoneNumber,
+                    ValidateCode: validateCode
+                }).success(function (result) {
+                    $scope.isComplete = false;
+                    if (result.Code == 200) {
+                        toast('已完成手机号码验证');
+                        confirmCoupon()
+                        $scope.closeMask();
+                    }
+                    else {
+                        toast('无法绑定此号码，请稍后再试');
+                        $scope.isComplete = false;
+                    }
+                });
+            };
 
             $scope.closeMask = function () {
                 $scope.maskOpen = false;
                 $scope.couponOpen = false;
-                $scope.inputCouponOpen = false;
+                $scope.validateStep = 0;
 
             }
 
@@ -455,6 +541,8 @@
             }
 
 
+
+
             /**
              * 保存订单
              */
@@ -490,15 +578,16 @@
                     Name: orderList[0].Address.Addressee,
                     Phone: orderList[0].Address.Mobile,
                     CardId: $scope.idCard.no
-                }).success(function (ret, code) {
-                    if (code == 200) {
+                }).success(function (ret) {
+                    if (ret.Code == 200) {
                         if (ret.Result) {
                             toSave();
                         }
                         else {
                             toast('保存身份证信息失败');
                         }
-
+                    }else{
+                        toast(ret.Msg);
                     }
                 });
 
@@ -870,9 +959,9 @@
                 }
 
                 function getCityListJson(){
-                    data4jsonp('/api/getCityList').success(function (ret) {
-                        if(ret){
-                            addressService.cityList = ret;
+                    data4jsonp('/api/address/CityListByJson').success(function (ret) {
+                        if(ret.Code == 200){
+                            addressService.cityList = ret.Data.City;
                             try{
                                 localStorage.setItem('cityListStr',JSON.stringify(ret));
                             }catch(e){}
