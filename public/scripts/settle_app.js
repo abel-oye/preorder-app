@@ -133,8 +133,8 @@
         '$timeout',
         function ($scope, $http, IdCardValidate, AddressService, ymtUI,$timeout) {
 
-            var jsApiHost = 'http://172.16.2.97:8080';
-            //var jsApiHost = 'http://jsapi.preorder.ymatou.com';
+            //var jsApiHost = 'http://172.16.2.97:8080';
+            var jsApiHost = 'http://jsapi.preorder.ymatou.com';
 
             var safeApply = function (fn) {
                 ($scope.$$phase || $scope.$root.$phase) ? fn(): $scope.$apply(fn);
