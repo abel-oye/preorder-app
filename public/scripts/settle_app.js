@@ -421,6 +421,7 @@
                         }, 1000);
                     }
                     else {
+                       $scope.coupon.btnStatus = false;
                        $scope.coupon.btnTxt = '重新发送';
                     }
                 };
@@ -428,8 +429,9 @@
                 data4jsonp(jsApiHost + '/api/User/SendBindMobileValidateCode', {
                     Phone: $scope.phoneNumber
                 }).success(function (result) {
-                   $scope.coupon.btnStatus = false;
                     if (result.Code != 200) {
+                        $scope.coupon.btnStatus = false;
+                        $scope.coupon.btnTxt = '重新发送';
                         return toast(result.Msg || '发送失败');
                     }
                     else {
@@ -442,7 +444,7 @@
             };
             //完成验证
             $scope.completeValidate = function () {
-                var validateCode = $scope.validateCode;
+                var validateCode = $scope.coupon.validCode;
                 if (!validateCode || $scope.isComplete) {
                     return;
                 }
@@ -453,16 +455,16 @@
 
                 data4jsonp(jsApiHost + '/api/User/VerifyBindMobileValidateCode', {
                     Phone: $scope.phoneNumber,
-                    ValidateCode: validateCode
+                    Code: validateCode
                 }).success(function (result) {
                     $scope.isComplete = false;
                     if (result.Code == 200) {
                         toast('已完成手机号码验证');
-                        confirmCoupon()
+                        confirmCoupon();
                         $scope.closeMask();
                     }
                     else {
-                        toast('无法绑定此号码，请稍后再试');
+                        toast(result.Msg || '无法绑定此号码，请稍后再试');
                         $scope.isComplete = false;
                     }
                 });
