@@ -27,7 +27,7 @@ var config = {
     dist: 'dist/', //静态资源产物路径
     view: 'views/', //页面路径
     viewOut: 'app/views', //页面处理之后路径
-    staticPath: 'http://staitc.preorder.app.ymatou.com', //静态站点host
+    staticPath: 'http://static.preorder.app.ymatou.com', //静态站点host
     cssSrc: ['public/{styles,css}/{,*/}*.scss', '!public/{styles,css}/_*/*']
 };
 
