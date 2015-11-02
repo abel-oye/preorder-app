@@ -29,9 +29,7 @@ $price-color:#cc3333;//价格颜色
 body{
     background:#e8e8e8;
 }
-.settle-container{
-    overflow:hidden;
-}
+
 //收件地址
 .address-wrapp{
     background:#fff;
@@ -67,7 +65,6 @@ body{
     background:#fff;
     padding:$rem*22 $rem*24;
     margin-bottom:$rem*18;
-    height:$rem*248;
 }
 .customs-title{
    font-size:$rem*24;
@@ -97,8 +94,9 @@ body{
         width:100%;
         color:#686868;
         border:1px solid #9b9b9b;
-        font-size:$rem*38;
+        font-size:$rem*30;
         border-radius:$rem*8;
+        height:$rem*80;
     }
     .msg-text{
         color:#cc3333;
