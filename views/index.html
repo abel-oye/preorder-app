@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-cmn-Hans" ng-app="settle.app">
+<html lang="zh-cmn-Hans" ng-app="preOrderApp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0">
@@ -15,9 +15,10 @@
     <!-- build:css /styles/index.css-->
     <link rel="stylesheet" type="text/css" href="/styles/main.css">
     <!-- endbuild-->
+    <style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}</style>
 </head>
 <body>
-    <section class="settle-container  ng-cloak" ng-controller="settle.app.controller.index">
+    <section class="settle-container  ng-cloak" ng-controller="preOrderApp.controller.index">
         <!--收件地址-->
         <address class="address-wrapp ng-cloak" ng-click="openAddress()" ng-if="orderInfo.Orders">
             <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0]" >收件人 : {{orderInfo.Orders[0].Address.Addressee}} <span class="fr">{{orderInfo.Orders[0].Address.Mobile}}</span></h3>
@@ -118,7 +119,7 @@
             </div>
         </div>
 
-        <div class="dialog-mask ng-cloak" ng-if="maskOpen" ng-click="closeMask()"></div>
+        <div class="dialog-mask ng-cloak" ng-class="{open:maskOpen}" ng-click="closeMask()"></div>
         <!--输入优惠券-->
         <div class="dialog ng-cloak" ng-class="{open:validateStep == 1}">
             <div class="dialog-content">
@@ -139,7 +140,7 @@
             </div>
         </div>
         <!--绑定优惠券-->
-        <div class="dialog ng-cloak open" ng1-class="{open:validateStep == 2}">
+        <div class="dialog ng-cloak" ng-class="{open:validateStep == 2}">
             <div class="dialog-content">
                 <div class="title">
                     验证手机号码
@@ -255,12 +256,16 @@
                         <i class="icon-checkBox-selected2" ng-class="{'selected':AddressService.item.IsDefault}" ></i>
                         设置为默认收货地址</label>
                     </p>
+
+                    <p class="del-address" ng-click="deleteAddress(AddressService.item.AddressId)">删除收件地址</p>
                 </div>
                 <div class="btn-group">
                     <button class="btn btn-full" ng-click="saveAddress()">保存</button>
                 </div>
             </div>
         </div>
+
+        <div class="ymtui-dialog-mask"></div>
     </section>
     <!-- Google Tag Manager -->
     <script>
@@ -285,12 +290,12 @@
     </script>
     <!-- End Google Tag Manager -->
     <script type="text/javascript" src="http://static.matouapp.ymatou.com/js/ymtApi.2015101901.js?wxAutoInit=1"></script>
-    <!-- build:js /scripts/vendor/zepto.js,angular.js -->
+    <!-- build:js /scripts/vendor/zepto,angular.js -->
     <script src="/scripts/vendor/zepto.min.js"></script>
-    <!-- endbuild -->
     <script src="/scripts/vendor/angular.min.js"></script>
-    <!-- build:js /scripts/settle.app-min.js -->
-    <script src="/scripts/settle.app.js"></script>
+    <!-- endbuild -->
+    <!-- build:js /scripts/settle-app_min.js -->
+    <script src="/scripts/settle_app.js"></script>
     <!-- endbuild -->
 </body>
 </html>

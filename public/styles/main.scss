@@ -379,8 +379,7 @@ body{
         right: 0;
         bottom: 0;
         left: 0;
-
-        //display: none;
+        display: none;
 
         background: rgba(0,0,0,.7);
         &.open
@@ -661,6 +660,15 @@ body{
     &.selected{
        color:#C4392F;
     }
+   }
+   //删除地址
+   .del-address{
+      color:$price-color;
+      padding:$rem*16;
+      border:1px solid #ddd;
+      background::#fff;
+      font-size:$rem*30;
+      border-radius: $rem*6;
    }
 }
 

@@ -5,7 +5,7 @@
  */
 @import'_components/variables.scss';
 
-.ymt-ui-toast{
+.ymtui-toast{
     position: fixed;
     z-index: 9999;
     top: 50%;
@@ -18,4 +18,99 @@
     background-color: rgba(0, 0, 0, 0.58);
     transition: transform 0.25s ease-in-out;
     transform:translate(-50%,-50%) scaleY(0);
+    &.show{
+        transform:translate(-50%,-50%) scaleY(1);
+    }
+}
+
+.ymtui-dialog{
+    width:$rem*658;
+    background:#fff;
+    color:$rem*35;
+    color:#383838;
+    text-align:center;
+    z-index:102;
+    border-radius:$rem*12;
+    padding:$rem*26;
+    border:1px solid #a19e9b;
+    position:fixed;
+    transform: translate(-50%,-50%);
+    left:50%;
+    top:50%;
+    display:none;
+    &.open{
+        display:block;
+    }
+    &-mask{
+        position: fixed;
+        z-index: 101;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0,0,0,.7);
+        display:none;
+        &.open{
+            display:block;
+        }
+    }
+}
+
+.rubberBand {
+  -webkit-animation-name: rubberBand;
+  animation-name: rubberBand;
+}
+
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.ymtui-commirm-bd{
+    padding:$rem*75 0;
+}
+.ymtui-commirm-ft{
+    .btn{
+        height:$rem*84;
+    }
+}
+
+
+@keyframes rubberBand {
+    0% {
+        -webkit-transform: translate(-50%,-50%) scale3d(1,1,1);
+        transform: translate(-50%,-50%) scale3d(1,1,1)
+    }
+
+    30% {
+        -webkit-transform: translate(-50%,-50%) scale3d(1.25,0.75,1);
+        transform: translate(-50%,-50%) scale3d(1.25,0.75,1)
+    }
+
+    40% {
+        -webkit-transform: translate(-50%,-50%) scale3d(0.75,1.25,1);
+        transform: translate(-50%,-50%) scale3d(0.75,1.25,1)
+    }
+
+    50% {
+        -webkit-transform: translate(-50%,-50%) scale3d(1.15,0.85,1);
+        transform: translate(-50%,-50%) scale3d(1.15,0.85,1)
+    }
+
+    65% {
+        -webkit-transform: translate(-50%,-50%) scale3d(.95,1.05,1);
+        transform: translate(-50%,-50%) scale3d(.95,1.05,1)
+    }
+
+    75% {
+        -webkit-transform: translate(-50%,-50%) scale3d(1.05,.95,1);
+        transform: translate(-50%,-50%) scale3d(1.05,.95,1)
+    }
+
+    100% {
+        -webkit-transform: translate(-50%,-50%) scale3d(1,1,1);
+        transform: translate(-50%,-50%) scale3d(1,1,1)
+    }
 }

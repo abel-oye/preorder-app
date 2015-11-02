@@ -8,6 +8,7 @@
   padding: $rem * 6 .9375em;
   margin-bottom: 0;
   font-weight: 400;
+  font-size:$rem*36;
   line-height: 1rem/16*17;
   text-align: center;
   white-space: nowrap;
@@ -18,8 +19,9 @@
   -ms-user-select: none;
   background-image: none;
   border: 0;
+  color:#686868;
   background-color:#CECECE;
-
+  border-radius:$rem*4;
 }
 
 //主色
@@ -34,4 +36,8 @@ $primary-active-color:#C33;
   &:active{
     background-color:$primary-active-color;
   }
+}
+
+.btn-full{
+    width:100%;
 }

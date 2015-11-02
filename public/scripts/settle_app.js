@@ -17,15 +17,15 @@
         var toast = function (opts) {
             if (toastStatus) {
                 toastStatus = false;
-                var errElm = $('.ymt-ui-toast');
+                var errElm = $('.ymtui-toast');
                 if (!errElm[0]) {
-                    errElm = $('<div class="ymt-ui-toast"></div>')
+                    errElm = $('<div class="ymtui-toast"></div>')
                         .appendTo('body');
                 }
-                errElm.html(opts.msg).css('transform', 'translate(-50%,-50%) scaleY(1)');
+                errElm.html(opts.msg).addClass('show');
 
                 setTimeout(function () {
-                    $('.ymt-ui-toast').css('transform', '');
+                    errElm.removeClass('show');
                     toastStatus = true;
                     opts.callback && opts.callback();
                 }, opts.duration || 1800);
@@ -33,25 +33,98 @@
         }
 
         var alert = function (opts) {
+            if(comfirmState){
+                comfirmState = false;
+                var comfirmElm =  $('.ymtui-comfirm');
+                if(!comfirmElm[0]){
+                    var html = [
+                       '<div class="ymtui-dialog ymtui-comfirm rubberBand animated">',
+                           '<div class="ymtui-commirm-hd"></div>',
+                           '<div class="ymtui-commirm-bd">',
+                           '</div>',
+                           '<div class="ymtui-commirm-ft">',
+                            '   <button type="button" class="btn btn-primary btn-full commirm">确定</button>',
+                           '</div>',
+                       '</div>',
+                    ]
+                    comfirmElm = $(html.join('')).appendTo('body');
+                }
 
+                var closeDialog = function(){
+                    $('.ymtui-comfirm').removeClass('open');
+                    $('.ymtui-dialog-mask').removeClass('open');
+                    comfirmState = true;
+                }
+                comfirmElm.find('.ymtui-commirm-bd').text(opts.msg);
+
+                comfirmElm.find('.ymtui-commirm-ft .commirm').one('click',function(){
+                    closeDialog()
+                    cb && cb();
+                });
+
+                comfirmElm.addClass('open');
+                $('.ymtui-dialog-mask').addClass('open');
+            }
         }
 
-        var comfirm = function (opts) {
+        var comfirmState = true;
+        /**
+         * 确认框
+         * @param  {object} opts [description]
+         * @param  {function} cb 点击成功操作之后的回调
+         */
+        //@TODO 这里要转成指令操作
+        var comfirm = function (opts,cb) {
+            if(comfirmState){
+                comfirmState = false;
+                var comfirmElm =  $('.ymtui-comfirm');
+                if(!comfirmElm[0]){
+                    var html = [
+                       '<div class="ymtui-dialog ymtui-comfirm rubberBand animated">',
+                           '<div class="ymtui-commirm-hd"></div>',
+                           '<div class="ymtui-commirm-bd">',
+                           '</div>',
+                           '<div class="ymtui-commirm-ft">',
+                            '   <button type="button" class="btn close">取消</button>',
+                            '   <button type="button" class="btn btn-primary commirm">确定</button>',
+                           '</div>',
+                       '</div>',
+                    ]
+                    comfirmElm = $(html.join('')).appendTo('body');
+                }
 
+                var closeDialog = function(){
+                    $('.ymtui-comfirm').removeClass('open');
+                    $('.ymtui-dialog-mask').removeClass('open');
+                    comfirmState = true;
+                }
+                comfirmElm.find('.ymtui-commirm-bd').text(opts.msg);
+
+                comfirmElm.find('.ymtui-commirm-ft .close').on('click',closeDialog);
+                comfirmElm.find('.ymtui-commirm-ft .commirm').one('click',function(){
+                    closeDialog()
+                    cb && cb();
+                });
+
+                comfirmElm.addClass('open');
+                $('.ymtui-dialog-mask').addClass('open');
+            }
         }
 
         return {
-            toast: toast
+            toast: toast,
+            comfirm:comfirm,
+            alert:alert
         }
     }]);
 
-    var app = angular.module('settle.app', ['ymt.UI']);
+    /**
+     * [preOrder ]
+     * @type {[type]}
+     */
+    var app = angular.module('preOrderApp', ['ymt.UI']);
 
-    var showLog = function () {
-
-    }
-
-    app.controller('settle.app.controller.index', [
+    app.controller('preOrderApp.controller.index', [
         '$scope',
         '$http',
         'IdCardValidate',
@@ -60,7 +133,8 @@
         '$timeout',
         function ($scope, $http, IdCardValidate, AddressService, ymtUI,$timeout) {
 
-            var jsApiHost = 'http://jsapi.preorder.ymatou.com';
+            var jsApiHost = 'http://172.16.2.97:8080';
+            //var jsApiHost = 'http://jsapi.preorder.ymatou.com';
 
             var safeApply = function (fn) {
                 ($scope.$$phase || $scope.$root.$phase) ? fn(): $scope.$apply(fn);
@@ -150,7 +224,7 @@
                     len = orders.length;
                 for (; i < len; i++) {
                     //验证是否存在杭保订单
-                    if (orders[i].BondedArea != 3) {
+                    if (orders[i].BondedArea == 3) {
                         $scope.hasBonded = true;
                         break;
                     }
@@ -267,7 +341,7 @@
             //确认输入优惠券
             $scope.confirmInputCoupon = function () {
                 if (!$scope.coupon.code) {
-                    showLog('优惠码不能为空');
+                    toast('优惠码不能为空');
                     return;
                 }
 
@@ -351,9 +425,7 @@
                     }
                 };
 
-                countDown(60);
-
-                data4jsonp(jsApiHost + '/api/sendBindMobileValidateCode', {
+                data4jsonp(jsApiHost + '/api/User/SendBindMobileValidateCode', {
                     Phone: $scope.phoneNumber
                 }).success(function (result) {
                    $scope.coupon.btnStatus = false;
@@ -379,7 +451,7 @@
                 }
                 $scope.isComplete = true;
 
-                data4jsonp(jsApiHost + '/api/bindMobile', {
+                data4jsonp(jsApiHost + '/api/User/VerifyBindMobileValidateCode', {
                     Phone: $scope.phoneNumber,
                     ValidateCode: validateCode
                 }).success(function (result) {
@@ -520,6 +592,15 @@
                 switchAddressState(2);
             }
 
+            $scope.deleteAddress = function(aid){
+                AddressService.delAddress(aid,function(){
+                    switchAddressState(1);
+                    AddressService.queryAddressList();
+                    changeOrderAddress(AddressService.item,true);
+                });
+            }
+
+
             var isSubmint = false,
                 isPay = false;
 
@@ -547,7 +628,6 @@
              * 保存订单
              */
             $scope.saveOrder = function () {
-
                 if (isPay) {
                     return;
                 }
@@ -556,6 +636,11 @@
                 if (isSubmint) {
                     return toast('订单已生成，请勿重复提交');
                 }
+
+                if(!$scope.orderInfo){
+                    return;
+                }
+
                 var orderList = $scope.orderInfo.Orders;
 
                 if (!orderList[0].Address) {
@@ -580,10 +665,9 @@
                     CardId: $scope.idCard.no
                 }).success(function (ret) {
                     if (ret.Code == 200) {
-                        if (ret.Result) {
+                        if (ret.Data.Result) {
                             toSave();
-                        }
-                        else {
+                        }else {
                             toast('保存身份证信息失败');
                         }
                     }else{
@@ -930,11 +1014,11 @@
             };
 
             ///@TODO 这个接口新增一个检查用户是否有邮箱的接口
-            data4jsonp('/api/getUserInfo').success(function (resultUser, code) {
+           /* data4jsonp('/api/getUserInfo').success(function (resultUser, code) {
                 if (code == '200') {
                     addressService.hasEmail = !!resultUser.ProfileInfo.Email;
                 }
-            });
+            });*/
             /**
              * 获得城市列表
              * 先从本地获取如果本地存在就不在往服务器获取
@@ -1104,19 +1188,20 @@
             };
 
             addressService.delAddress = function (aid, cb) {
-                confirmBox('是否删除收货地址？', function () {
-                    $http.post('/api/delAddress', {
+                ymtUI.comfirm({
+                    msg:'是否删除收货地址？'
+                }, function () {
+                    data4jsonp(jsApiHost+'/api/address/deleteaddress', {
                         AddressId: aid
                     }).success(function (resultAddress) {
                         if (resultAddress.Result != 'false') {
                             cb && cb();
                         }
                         else {
-                            prompt('删除地址错误');
+                            toast('删除地址错误');
                         }
                     });
                 });
-
             };
 
             return addressService;
