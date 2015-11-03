@@ -206,7 +206,7 @@
                         if (code == 200) {
                             var result =ret.Data.result;
                             safeApply(function () {
-                                $scope.isUploadIdCard = result == 2;
+                                $scope.isUploadIdCard = result;
                             });
                         }
                         else {
