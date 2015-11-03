@@ -224,7 +224,7 @@
                     len = orders.length;
                 for (; i < len; i++) {
                     //验证是否存在杭保订单
-                    if (orders[i].BondedArea == 3) {
+                    if (orders[i].BondedArea == 1 || orders[i].BondedArea == 2 || orders[i].BondedArea == 3) {
                         $scope.hasBonded = true;
                         break;
                     }
