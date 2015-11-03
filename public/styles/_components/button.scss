@@ -21,7 +21,7 @@
   border: 0;
   color:#686868;
   background-color:#CECECE;
-  border-radius:$rem*4;
+  border-radius:$rem*6;
 }
 
 //主色
@@ -37,7 +37,32 @@ $primary-active-color:#C33;
     background-color:$primary-active-color;
   }
 }
+.btn-white{
+    border:0;
+    background-color:#fff;
+    font-size:$rem*30;
+}
+
+.btn-border-primary{
+    border:1px solid $primary-color;
+    color:$primary-color;
+}
 
 .btn-full{
     width:100%;
+}
+
+
+////////////////////////////
+.btn-group{
+    .btn-group-col_2{
+        width:50%;
+        float: left;
+        &:last-child{
+            padding-left:$rem*10;
+        }
+        &:first-child{
+            padding-right:$rem*10;
+        }
+    }
 }

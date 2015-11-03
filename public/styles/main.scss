@@ -392,6 +392,7 @@ body{
             margin:$rem*20 auto;
         }
     }
+    max-height:80%;
     background:#fff;
     z-index:100;
     position: fixed;
@@ -403,7 +404,6 @@ body{
     left:50%;
     transform: translate(-50%,-50%);
     text-align:center;
-    max-height: 100%;
     overflow-y: auto;
     display:none;
     &.open{
@@ -433,6 +433,7 @@ body{
                 color:#fff;
                 padding:0 $rem*50;
                 font-size:$rem*30;
+                vertical-align: middle;
             }
         }
     }
@@ -442,21 +443,9 @@ body{
     }
     .btn-group{
         overflow:hidden;
-        &>div{
-            width:50%;
-            float:left;
-            &:first-child{
-                padding-right:$rem*13;
-            }
-            &:last-child{
-                padding-left:$rem*13;
-            }
-            &>.btn{
-                width:100%;
-                height:$rem*84;
-                font-size:$rem*35;
-                color:#fff;
-            }
+         .btn{
+            height:$rem*84;
+            font-size:$rem*35;
         }
     }
 }
@@ -510,14 +499,10 @@ body{
             left:0;
             width:100%;
             padding:$rem*24;
-           .btn-full{
-               width:100%;
-               height:$rem*80;
-               background:$price-color;
-               color:#fff;
-               font-size:$rem*30;
-               border-radius:$rem*6;
-           }
+            .btn{
+                height:$rem*80;
+                font-size:$rem*30;
+            }
        }
     }
     &-inner{

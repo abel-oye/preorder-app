@@ -84,9 +84,9 @@
                            '<div class="ymtui-commirm-hd"></div>',
                            '<div class="ymtui-commirm-bd">',
                            '</div>',
-                           '<div class="ymtui-commirm-ft">',
-                            '   <button type="button" class="btn close">取消</button>',
-                            '   <button type="button" class="btn btn-primary commirm">确定</button>',
+                           '<div class="ymtui-commirm-ft btn-group">',
+                           '   <div class="btn-group-col_2"><button type="button" class="btn close btn-full  btn-border-primary btn-white">取消</button></div>',
+                           '   <div class="btn-group-col_2"><button type="button" class="btn btn-primary btn-full commirm">确定</button></div>',
                            '</div>',
                        '</div>',
                     ]
@@ -623,9 +623,6 @@
                 return true;
             }
 
-
-
-
             /**
              * 保存订单
              */
@@ -1045,16 +1042,17 @@
                 }
 
                 function getCityListJson(){
-                    data4jsonp('/api/address/CityListByJson').success(function (ret) {
+                    data4jsonp(jsApiHost+'/api/address/CityListByJson').success(function (ret) {
                         if(ret.Code == 200){
-                            addressService.cityList = ret.Data.City;
+                            var city = ret.Data.City;
+                            addressService.cityList = city;
+                            addressService.cityObj = parseCity(JSON.parse(city));
+                            cb && cb();
+                            //保存放在主流程之后
                             try{
-                                localStorage.setItem('cityListStr',JSON.stringify(ret));
+                                localStorage.setItem('cityListStr',city);
                             }catch(e){}
 
-                            addressService.cityObj = parseCity(ret);
-
-                            cb && cb();
                         }else{
                             toast(ret.Msg);
                         }
