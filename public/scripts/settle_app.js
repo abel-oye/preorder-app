@@ -240,7 +240,9 @@
                     i =0 ,
                     len = ordersList.length;
                 for(;i<len;i++){
-                    total = parseFloat(total) + parseInt(ordersList[i].PromotionUsed && ordersList[i].PromotionUsed.UseCouponAmount || 0) + (ordersList[i].freeCard || 0);
+                    total = parseFloat(total) + parseInt(ordersList[i].PromotionUsed && ordersList[i].PromotionUsed.UseCouponAmount || 0)
+                        + (ordersList[i].freeCard || 0)
+                        + (ordersList[i].PromotionUsed.UseGiftAmount || 0)
                 }
 
                 $scope.discountPrice = total;
@@ -299,7 +301,7 @@
 
             $scope.selectCoupon = function (coupon) {
                 currProdcut.PromotionUsed = {}
-                currProdcut.PromotionUsed.UseCouponCode = true;
+                currProdcut.PromotionUsed.UseCouponCode = coupon.CouponValue;
 
                 currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
 
@@ -493,6 +495,8 @@
                 }
                 product.PromotionUsed = {}
                 product.PromotionUsed.UseGiftAmount = product.usedGift;
+
+                console.log(product.PromotionUsed.UseGiftAmount)
 
                 product.useDiscount = '￥' + product.usedGift + '红包';
 
