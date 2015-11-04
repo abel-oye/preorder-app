@@ -206,7 +206,7 @@
                         if (code == 200) {
                             var result =ret.Data.result;
                             safeApply(function () {
-                                $scope.isUploadIdCard = result;
+                                $scope.isUploadIdCard = result == 2;
                             });
                         }
                         else {
@@ -244,7 +244,7 @@
                 }
 
                 $scope.discountPrice = total;
-                $scope.ordersList.TotalPrice = ($scope.originalTotal - total).toFixed(2);
+                $scope.orderInfo.TotalPrice = ($scope.originalTotal - total).toFixed(2);
             }
 
             $scope.maskOpen = false;
@@ -267,7 +267,9 @@
 
                     data4jsonp(jsApiHost + '/api/preorder/ListAvailableCoupons', {
                         params: JSON.stringify(Catalogs),
-                        PlatformType: YmtApi.utils.getOrderSource()
+                        PlatformType: YmtApi.utils.getOrderSource(),
+                        sellerId:order.SellerId,
+                        TotalPrice:order.TotalPrice
                     }).success(function (ret, code) {
                         $scope.couponLoading = false;
                         if (ret.Code == 200) {
@@ -299,6 +301,10 @@
                 currProdcut.PromotionUsed.UseCouponCode = true;
 
                 currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
+
+                if(coupon.UseType == 1){
+                    currProdcut.PromotionUsed.UseCouponAmount = coupon.CouponValue;
+                }
 
                 acountDiscount();
 

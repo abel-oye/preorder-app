@@ -89,7 +89,7 @@
                                 <label><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && i.PromotionUsed.inputCouponCode}"></i></label>输入优惠券编码
                                 <i class="icon-arrow-right"></i>
                             </li>
-                            <li ng-if="i.Promotion.CanUseGift" ng-class="{'disabled':i.usedGift==0}" ng-click="useGift(i)">
+                            <li ng-if="i.Promotion.CanUseGift" ng-class="{'disabled':i.Promotion.CanUseGift && i.usedGift==0}" ng-click="useGift(i)">
                                 <label><i class="icon-checkBox" ng-class="{selected:i.PromotionUsed.UseGiftAmount}"></i></label>使用红包
                                 <small>订单可使用最大的红包数 <strong>&yen;{{i.usedGift}}</strong></small>
                             </li>
