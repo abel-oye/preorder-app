@@ -18,7 +18,7 @@
     background-color: rgba(0, 0, 0, 0.58);
     transition: transform 0.25s ease-in-out;
     transform:translate(-50%,-50%) scaleY(0);
-    white-space:nowrap;
+    word-break: break-all;
     &.show{
         transform:translate(-50%,-50%) scaleY(1);
     }
