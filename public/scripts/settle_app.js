@@ -203,8 +203,8 @@
                 data4jsonp(jsApiHost + '/api/IdCardManage/CheckIsNeedUploadIdCard?callback=JSON_CALLBACK')
                     .success(function (ret, code) {
                         //1不用上传，2必须下单前上传，3可下单后上传
-                        if (code == 200) {
-                            var result =ret.Data.result;
+                        if (ret.Code == 200) {
+                            var result =ret.Data.Result;
                             safeApply(function () {
                                 $scope.isUploadIdCard = result == 2;
                             });
