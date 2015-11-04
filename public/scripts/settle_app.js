@@ -654,7 +654,7 @@
                 }
 
                 //是否需要上传身份证
-                if (!$scope.isUploadIdCard && $scope.hasBonded) {
+                if ($scope.isUploadIdCard && $scope.hasBonded) {
                     if (!$scope.validateIdcard()) {
                         return;
                     }
