@@ -190,7 +190,7 @@
 
                 });
 
-            $scope.isUploadIdCard = true;
+            $scope.isUploadIdCard = false;
             /**
              * 检查身份证是否上传
              */
@@ -269,7 +269,8 @@
                         params: JSON.stringify(Catalogs),
                         PlatformType: YmtApi.utils.getOrderSource(),
                         sellerId:order.SellerId,
-                        TotalPrice:order.TotalPrice
+                        TotalPrice:order.TotalPrice,
+                        PlatformType:YmtApi.utils.getOrderSource()
                     }).success(function (ret, code) {
                         $scope.couponLoading = false;
                         if (ret.Code == 200) {
@@ -706,10 +707,11 @@
                             useragent: op['useragent']
                         }
                     }
-
+                    var ua = window.navigator.userAgent;
                     data4jsonp(jsApiHost + '/api/PreOrder/SaveOrder', {
                         params: JSON.stringify(data),
-                        orderSource:YmtApi.OrderSource
+                        orderSource:YmtApi.utils.getOrderSource(),
+                        ClientType:/ios/ig.test(ua)?1:/Android|Linux/ig.test(ua)?2:0
                     }).success(function (res) {
                         isPay = true;
                         if (res.Code == 200) {
