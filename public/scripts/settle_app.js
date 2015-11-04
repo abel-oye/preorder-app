@@ -708,7 +708,8 @@
                     }
 
                     data4jsonp(jsApiHost + '/api/PreOrder/SaveOrder', {
-                        params: JSON.stringify(data)
+                        params: JSON.stringify(data),
+                        orderSource:YmtApi.OrderSource
                     }).success(function (res) {
                         isPay = true;
                         if (res.Code == 200) {
