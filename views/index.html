@@ -57,7 +57,7 @@
                         </div>
                         <div class="info">
                             <h4>{{p.ProductName}}</h4>
-                            <p ng-if="p.CatalogPropertyList && p.CatalogPropertyList[0]">商品规格：<b ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.PropertyAttribute}}</b></p>
+                            <p ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.Property}} : <b>{{catalogProp.PropertyAttribute}}</b></p>
                             <p>
                                 <span class="pro-flag local-return" ng-if=""><i class="icon-local-return"></i>本土退货</span>
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==5"><i class="icon-beihai-bonded"></i>贝海保税</span>
