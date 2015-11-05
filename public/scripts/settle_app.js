@@ -180,7 +180,7 @@
                                 i = 0,
                                 len = orders.length;
                             for (; i < len; i++) {
-                                num += (orders[i].Products && orders[i].Products.length || 0);
+                                num += orders[i].ProductNumber;
                             }
                             return num;
                         })(result.Orders);
