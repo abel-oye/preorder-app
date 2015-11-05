@@ -313,7 +313,7 @@
 
             $scope.selectCoupon = function (coupon) {
                 currProdcut.PromotionUsed = {};
-                currProdcut.PromotionUsed.UseCouponCode = coupon.CouponValue;
+                currProdcut.PromotionUsed.UseCouponCode = coupon.CouponCode;
 
                 currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
 
