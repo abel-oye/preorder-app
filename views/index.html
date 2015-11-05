@@ -21,11 +21,11 @@
     <section class="settle-container  ng-cloak" ng-controller="preOrderApp.controller.index">
         <!--收件地址-->
         <address class="address-wrapp ng-cloak" ng-click="openAddress()" ng-if="orderInfo.Orders">
-            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0]" >收件人 : {{orderInfo.Orders[0].Address.Addressee}} <span class="fr">{{orderInfo.Orders[0].Address.Mobile}}</span></h3>
-            <div ng-if="orderInfo.Orders && orderInfo.Orders[0]" >
+            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId" >收件人 : {{orderInfo.Orders[0].Address.Addressee}} <span class="fr">{{orderInfo.Orders[0].Address.Mobile}}</span></h3>
+            <div ng-if="orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId" >
                 {{orderInfo.Orders[0].Address.Area}} {{orderInfo.Orders[0].Address.DetailAddress}}
             </div>
-            <div class="add-address" ng-if="!(orderInfo.Orders && orderInfo.Orders[0])">
+            <div class="add-address" ng-if="!(orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId)">
                 点击新增收货地址
             </div>
             <i class="icon-arrow-right"></i>
@@ -189,17 +189,6 @@
         <div class="pt-page address-edit-wrapper ng-cloak" switch-page="addressState == 1">
             <div class="address-edit-inner">
                 <ul class="address-edit-list">
-                 <!-- <li ng-repeat1="add in AddressService.list | orderBy:'AddressId'" ng-class="{selected:add.IsDefault}" ng-click="editAddress(add.AddressId)" class="ng-scope">
-                         <label ng-click="setDefault(add)"><i class="icon-checkBox-selected2"></i></label>
-                        <div class="text-area" ng-click="editAddress(add.AddressId)">
-                            <h5 class="ng-binding">你你 13122222222</h5>
-                            <div class="ng-binding">
-                                上海市,上海市,普陀区 嘀嗒
-                            </div>
-                            <i class="icon-arrow-right"></i>
-                        </div>
-
-                    </li> -->
                     <li ng-repeat="add in AddressService.list | orderBy:'AddressId'" ng-class="{selected:add.IsDefault}">
                          <label ng-click="setDefault(add)"><i class="icon-checkBox-selected2" ></i></label>
                         <div class="text-area"  ng-click="editAddress(add.AddressId)">

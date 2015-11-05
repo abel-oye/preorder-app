@@ -76,7 +76,7 @@
          * @param  {function} cb 点击成功操作之后的回调
          */
         //@TODO 这里要转成指令操作
-        var comfirm = function (opts, cb) {
+        var comfirm = function (opts, callbak) {
             if (comfirmState) {
                 comfirmState = false;
                 var comfirmElm = $('.ymtui-comfirm');
@@ -105,7 +105,7 @@
                 comfirmElm.find('.ymtui-commirm-ft .close').on('click', closeDialog);
                 comfirmElm.find('.ymtui-commirm-ft .commirm').one('click', function () {
                     closeDialog();
-                    opts.callback && opts.callback();
+                    callbak && callbak();
                 });
 
                 comfirmElm.addClass('open');
@@ -168,22 +168,30 @@
 
                         $scope.orderInfo = result;
 
-                        //保存原价
-                        $scope.originalTotal = result.TotalPrice;
 
-                        hasBonded(result.Orders);
+                        var orders = result.Orders;
 
-                        checkIdCardExistInYmt();
+                        if(orders){
 
-                        $scope.productNumber = (function (orders) {
-                            var num = 0,
-                                i = 0,
-                                len = orders.length;
-                            for (; i < len; i++) {
-                                num += orders[i].ProductNumber;
-                            }
-                            return num;
-                        })(result.Orders);
+                            //保存原价
+                            $scope.originalTotal = result.TotalPrice;
+
+                            hasBonded(orders);
+
+                            checkIdCardExistInYmt();
+
+                            $scope.productNumber = (function (orders) {
+                                var num = 0,
+                                    i = 0,
+                                    len = orders.length;
+                                for (; i < len; i++) {
+                                    num += orders[i].ProductNumber;
+                                }
+                                return num;
+                            })(orders);
+                        }
+
+
                     }
                     else {
                         toast(data.Msg);
@@ -197,12 +205,18 @@
              * 检查身份证是否上传
              */
             function checkIdCardExistInYmt() {
-                if (!$scope.hasBonded) {
+
+                var address = $scope.orderInfo.Orders[0].Address;
+
+                if (!$scope.hasBonded || !address.AddressId) {
                     return;
                 }
 
-                data4jsonp(jsApiHost + '/api/IdCardManage/CheckIsNeedUploadIdCard?callback=JSON_CALLBACK')
-                    .success(function (ret, code) {
+                console.log(address)
+                data4jsonp(YmtApi.utils.addParam(jsApiHost + '/api/IdCardManage/CheckIsNeedUploadIdCard?callback=JSON_CALLBACK'),{
+                    ReceiverName :address.Addressee,
+                    ReceiverMobile :address.Mobile
+                }).success(function (ret, code) {
                         //1不用上传，2必须下单前上传，3可下单后上传
                         if (ret.Code == 200) {
                             var result = ret.Data.Result;
@@ -555,10 +569,8 @@
             $scope.setDefault = function (address) {
                 AddressService.setDefault(address, function () {
                     toast('修改成功');
-                    safeApply(function () {
-                        changeOrderAddress(address);
-                    });
-                    //AddressService.queryAddressList();
+                    changeOrderAddress(address);
+                    AddressService.queryAddressList();
                     switchAddressState(0);
                 });
             };
@@ -588,8 +600,8 @@
             $scope.saveAddress = function () {
                 AddressService.saveAddress(AddressService.item, function (result) {
                     toast('修改成功');
-                    switchAddressState(1);
                     AddressService.queryAddressList();
+                    switchAddressState(1);
                     if (result && result.AddressId) {
                         AddressService.item.addressId = result.AddressId;
                     }
@@ -604,8 +616,10 @@
 
             $scope.deleteAddress = function (aid) {
                 AddressService.delAddress(aid, function () {
+                    AddressService.queryAddressList(function(){
+
+                    });
                     switchAddressState(1);
-                    AddressService.queryAddressList();
                     changeOrderAddress(AddressService.item, true);
                 });
             };
@@ -1121,7 +1135,7 @@
             /**
              * 获得当前用户的地址列表
              */
-            addressService.queryAddressList = function () {
+            addressService.queryAddressList = function (cb) {
                 getCityList(function () {
                     //console.log(addressService, '2222')
                 });
@@ -1131,11 +1145,9 @@
                     .success(function (result, code) {
                         var resultAddress;
                         if (result.Code == 200) {
-                            if (result.Data && (resultAddress = result.Data.AddressList) && resultAddress[0]) {
+                            if (result.Data && (resultAddress = result.Data.AddressList)) {
                                 addressService.list = resultAddress.slice(0, 5);
-                            }
-                            else {
-                                toast(result.Msg);
+                                cb && cb(addressService.list);
                             }
                         }
                     });
