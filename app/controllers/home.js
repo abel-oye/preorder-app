@@ -30,4 +30,9 @@ router.get('/index', function (req, res, next) {
     var data = utils.extends({},config.params);
     res.render('index', data);
 });
+//支付成功页
+router.get('/success', function (req, res, next) {
+    var data = utils.extends({},config.params);
+    res.render('success', data);
+});
 
