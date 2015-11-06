@@ -161,6 +161,8 @@
                 })));
             };
 
+            $scope.discountPrice = 0;
+
             data4jsonp(jsApiHost + '/api/preorder/ListOrderInfo')
                 .success(function (data) {
                     if (data.Code == 200) {
@@ -174,7 +176,7 @@
                         if(orders && orders[0]){
 
                             //保存原价
-                            $scope.originalTotal = result.TotalPrice;
+                            $scope.originalTotal = result.TotalPrice = parseFloat(result.TotalPrice.toFixed(2));
 
                             hasBonded(orders);
 
