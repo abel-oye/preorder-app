@@ -108,10 +108,10 @@
             <div class="settle-tools">
                 <div class="text">
                     <div>
-                        共计 {{productNumber || 0}} 件商品,合计:<strong>&yen;{{ (orderInfo.TotalPrice || 0).toFixed(2) }}</strong>
+                        共计 {{productNumber || 0}} 件商品,合计:<strong>&yen;{{ orderInfo.TotalPrice }}</strong>
                     </div>
                     <div class="a">
-                        <small>含运费: &yen;{{orderInfo.TotalFreight || 0 }}   优惠扣除: -&yen;{{(discountPrice || 0).toFixed(2)}} </small>
+                        <small>含运费: &yen;{{orderInfo.TotalFreight || 0 }}   优惠扣除: -&yen;{{discountPrice}} </small>
                     </div>
                 </div>
                 <button class="btn btn-primary" type="button" ng-click="saveOrder()">立即购买</button>

@@ -257,7 +257,7 @@
                     total = parseFloat(total) + parseInt(ordersList[i].PromotionUsed && ordersList[i].PromotionUsed.UseCouponAmount || 0) + (ordersList[i].freeCard || 0) + (ordersList[i].PromotionUsed.UseGiftAmount || 0);
                 }
 
-                $scope.discountPrice = total;
+                $scope.discountPrice = total.toFixed(2);
                 $scope.orderInfo.TotalPrice = ($scope.originalTotal - total).toFixed(2);
             }
 
@@ -302,6 +302,7 @@
                 if(order.PromotionUsed.UseCouponCode){
                     order.PromotionUsed.UseCouponCode = '';
                     acountDiscount();
+                    order.useDiscount = '';
                 }else{
                     $scope.couponOpen = true;
                     $scope.maskOpen = true;
@@ -337,6 +338,7 @@
                     order.PromotionUsed.inputCouponCode = false;
                     currProdcut.PromotionUsed.UseCouponAmount = 0;
                     acountDiscount();
+                    order.useDiscount = '';
                 }else{
                    $scope.validateStep = 1;
                    $scope.maskOpen = true;
@@ -516,6 +518,7 @@
             $scope.useGift = function (product, val) {
                 if(product.PromotionUsed.UseGiftAmount){
                     product.PromotionUsed.UseGiftAmount = 0;
+                    product.useDiscount = '';
                 }else{
                     if (product.isUseGift || product.usedGift === 0) {
                         return;
