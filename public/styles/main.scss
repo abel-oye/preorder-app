@@ -125,10 +125,11 @@ body{
 
 .buyer-item-hd{
     background:#fff;
-    padding:0 $rem*24;
-    padding-top:$rem*21;
+    padding:$rem*20 $rem*24;
+    padding-bottom:0;
+    line-height: 1;
     strong{
-        font-size:$rem*28;
+        font-size:$rem*30;
         color:#383838;
         font-weight:bold;
     }
@@ -167,7 +168,7 @@ body{
        position:relative;
         h4{
             padding-right:$rem*120;
-             font-size:$rem*22;
+             font-size:$rem*24;
              height:$rem*66;
              color:#383838;
              @include textOverFlow(2);
@@ -265,7 +266,7 @@ body{
         {
             font-size:$rem*40;
             color:#686868;
-            margin-right:$rem*30;
+            margin-right:$rem*25;
             vertical-align: middle;
             &-selected{
                 color:#c4392f
@@ -337,20 +338,18 @@ body{
     border-top:1px solid #dddddd;
     .text{
         color:#646464;
-        font-size:$rem*26;
-        line-height:1.5;
+        font-size:$rem*30;
           display: inline-block;
           margin-right:$rem*24;
-          padding-top:$rem*15;
-          &>div{
-            line-height:1.2;
-          }
+          padding-top:$rem*9;
+          line-height:1.2;
          strong{
             font-size:$rem*32;
             color:$price-color;
         }
         small{
             color:#c4c4c4;
+            font-size:$rem*22;
         }
     }
     .btn{
@@ -461,6 +460,9 @@ body{
         text-align:left;
         padding:$rem*22 0;
         border-bottom:1px solid #cecece;
+        &:last-child{
+            border-bottom:0;
+        }
         h3{
             color:$price-color;
             color:$rem*30;
@@ -542,6 +544,7 @@ body{
                 -moz-box-flex: 1;
                 -webkit-box-flex: 1;
                 box-flex: 1;
+                padding-right:$rem*60;
             }
             h5{
                 font-size:$rem*30;
@@ -549,7 +552,7 @@ body{
             }
             .icon-arrow-right{
                 position:absolute;
-                right:0;
+                right:$rem*24;
                 top:50%;
                 font-size:$rem*30;
                 transform: translate(0,-50%);

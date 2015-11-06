@@ -171,7 +171,7 @@
 
                         var orders = result.Orders;
 
-                        if(orders){
+                        if(orders && orders[0]){
 
                             //保存原价
                             $scope.originalTotal = result.TotalPrice;
@@ -212,7 +212,6 @@
                     return;
                 }
 
-                console.log(address)
                 data4jsonp(YmtApi.utils.addParam(jsApiHost + '/api/IdCardManage/CheckIsNeedUploadIdCard?callback=JSON_CALLBACK'),{
                     ReceiverName :address.Addressee,
                     ReceiverMobile :address.Mobile
@@ -300,13 +299,18 @@
                 };
             //打开使用优惠券
             $scope.openUserCoupon = function (order) {
-                $scope.couponOpen = true;
-                $scope.maskOpen = true;
+                if(order.PromotionUsed.UseCouponCode){
+                    order.PromotionUsed.UseCouponCode = '';
+                    acountDiscount();
+                }else{
+                    $scope.couponOpen = true;
+                    $scope.maskOpen = true;
 
-                currProdcut = order;
+                    currProdcut = order;
 
-                if (!$scope.couponsList) {
-                    getCoupon(order);
+                    if (!$scope.couponsList) {
+                        getCoupon(order);
+                    }
                 }
 
             };
@@ -328,11 +332,18 @@
 
             //打开输入优惠券
             $scope.openInputCoupon = function (order) {
-                $scope.validateStep = 1;
-                $scope.maskOpen = true;
-                $scope.coupon.code = '';
+               if(order.PromotionUsed.inputCouponCode){
+                    order.PromotionUsed.UseCouponCode = '';
+                    order.PromotionUsed.inputCouponCode = false;
+                    currProdcut.PromotionUsed.UseCouponAmount = 0;
+                    acountDiscount();
+                }else{
+                   $scope.validateStep = 1;
+                   $scope.maskOpen = true;
+                   $scope.coupon.code = '';
 
-                currProdcut = order;
+                   currProdcut = order;
+                }
             };
 
             var currCoupon = {
@@ -503,13 +514,17 @@
              * 使用红包
              */
             $scope.useGift = function (product, val) {
-                if (product.isUseGift || product.usedGift === 0) {
-                    return;
-                }
-                product.PromotionUsed = {};
-                product.PromotionUsed.UseGiftAmount = product.usedGift;
+                if(product.PromotionUsed.UseGiftAmount){
+                    product.PromotionUsed.UseGiftAmount = 0;
+                }else{
+                    if (product.isUseGift || product.usedGift === 0) {
+                        return;
+                    }
+                    product.PromotionUsed = {};
+                    product.PromotionUsed.UseGiftAmount = product.usedGift;
 
-                product.useDiscount = '￥' + product.usedGift + '红包';
+                    product.useDiscount = '￥' + product.usedGift + '红包';
+                }
 
                 acountDiscount();
             };
