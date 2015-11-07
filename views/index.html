@@ -61,8 +61,8 @@
                             <p>
                                 <span class="pro-flag local-return" ng-if=""><i class="icon-local-return"></i>本土退货</span>
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==5"><i class="icon-beihai-bonded"></i>贝海保税</span>
-                                <span class="pro-flag xloboBoned" ng-if="product.CatalogStatus==3&&!product.IsPurchasingOrder || product.CatalogStatus==1"> <i class="icon-beihai-directMail"></i>贝海直邮</span>
-                                <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==4"> <i class="icon-beihai-directMail"></i>第三方认证保税</span></p>
+                                <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==3"> <i class="icon-beihai-directMail"></i>贝海直邮</span>
+                                <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==4"> <i class="icon-seller-bonded"></i>卖家保税</span></p>
                             <div class="attr">
                                 <strong>&yen;{{p.QuotePrice.toFixed(2)}}</strong>
                                 <del ng-if="p.OriginPrice && p.OriginPrice != p.QuotePrice">&yen;{{p.OriginPrice.toFixed(2)}}</del>
@@ -284,8 +284,8 @@
         })(window, document, 'script', 'dataLayer', 'GTM-P26VLJ', '_dc_');
     </script>
     <!-- End Google Tag Manager -->
-    <script src="http://staticwap.ymatou.com/item.app/build/jweixin.2015091501.js"></script>
-    <script type="text/javascript" src="http://static.matouapp.ymatou.com/js/ymtApi.2015110601.js?wxAutoInit=1"></script>
+    <script src="http://static.jyh.ymatou.com/commons/js/jweixin.2015110601.js"></script>
+    <script src="http://static.jyh.ymatou.com/commons/js/ymtapi.2015110601.js?wxAutoInit=1"></script>
     <!-- build:js /scripts/vendor/zepto,angular.js -->
     <script src="/scripts/vendor/zepto.min.js"></script>
     <script src="/scripts/vendor/angular.min.js"></script>

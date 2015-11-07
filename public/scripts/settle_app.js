@@ -30,7 +30,7 @@
                     errElm.removeClass('show');
                     toastStatus = true;
                     opts.callback && opts.callback();
-                }, opts.duration || 1800);
+                }, opts.duration || 2400);
             }
         };
 
