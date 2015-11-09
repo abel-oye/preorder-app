@@ -101,6 +101,15 @@
                 </div>
             </div>
         </div>
+        <div class="preorder-no-result" ng-if="(orderInfo && !orderInfo.Orders[0]) || !orderInfo">
+            <div class="no-result-bg">
+
+            </div>
+            <div calss="no-result-text">
+                <p>哈尼~非常抱歉</p>
+                <p>该商品状态已变更，请返回重试。</p>
+            </div>
+        </div>
 <!--         <div class="protocol">
      <label><i class="icon-checkBox-selected"></i></label> 我已同意 <b>《进口个人委托申报委托》</b>
 </div> -->
