@@ -163,12 +163,17 @@
 
             $scope.discountPrice = 0;
 
+
+            $scope.load = false;
+
             data4jsonp(jsApiHost + '/api/preorder/ListOrderInfo')
                 .success(function (data) {
+                     $scope.load = true;
                     if (data.Code == 200) {
                         var result = data.Data;
 
                         $scope.orderInfo = result;
+
 
 
                         var orders = result.Orders;
