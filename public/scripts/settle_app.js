@@ -1038,7 +1038,9 @@
                 })));
             };
 
-
+            /**
+             * 设置默认地址
+             */
             addressService.setDefault = function (address, callback) {
                 address.IsDefault = true;
                 addressService.saveAddress(address, callback);
@@ -1046,24 +1048,41 @@
 
             addressService.select = {};
 
-            addressService.selectCity = function (id) {
-                for (var i in addressService.cityList['0']) {
-                    if (addressService.item.ProvinceName == addressService.cityList['0'][i]) {
-                        addressService.select.CityNameId = '0,' + i;
-                        addressService.selectCityObj = addressService.cityObj['0,' + i];
+            //市级联
+            addressService.selectCity = function () {
+                //如果未选择省 清空市
+                if(addressService.item.ProvinceName){
+                    for (var i in addressService.cityList['0']) {
+                        if (addressService.item.ProvinceName == addressService.cityList['0'][i]) {
+                            addressService.select.CityNameId = '0,' + i;
+                            addressService.selectCityObj = addressService.cityObj['0,' + i];
+                        }
                     }
+                }else{
+                    //重置上次选择
+                    addressService.selectCityObj = {};
+                    addressService.item.CityName = '';
+                    addressService.item.DistrictName = '';
                 }
+
                 //addressService.select.DistrictNameId = undefined;
                 addressService.selectDistrictObj = '';
             };
 
-            addressService.areaCity = function (id) {
-                for (var i in addressService.cityList[addressService.select.CityNameId]) {
-                    if (addressService.item.CityName == addressService.cityList[addressService.select.CityNameId][i]) {
-                        //addressService.select.DistrictNameId = addressService.select.CityNameId + ',' + i;
-                        addressService.selectDistrictObj = addressService.cityObj[addressService.select.CityNameId + ',' + i];
+            addressService.areaCity = function () {
+                //如果未选择市 清空区
+                if(addressService.item.CityName){
+                    for (var i in addressService.cityList[addressService.select.CityNameId]) {
+                        if (addressService.item.CityName == addressService.cityList[addressService.select.CityNameId][i]) {
+                            //addressService.select.DistrictNameId = addressService.select.CityNameId + ',' + i;
+                            addressService.selectDistrictObj = addressService.cityObj[addressService.select.CityNameId + ',' + i];
+                        }
                     }
+                }else{
+                    addressService.selectDistrictObj = {};
+                    addressService.item.DistrictName = '';
                 }
+
             };
 
             ///@TODO 这个接口新增一个检查用户是否有邮箱的接口
