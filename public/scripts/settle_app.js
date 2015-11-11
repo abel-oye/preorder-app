@@ -1100,7 +1100,7 @@
 
                 var cityListStr = localStorage.getItem('cityListStr');
 
-                if (false && cityListStr) {
+                if (cityListStr) {
                     try {
                         addressService.cityList = JSON.parse(cityListStr);
                         addressService.cityObj = parseCity(addressService.cityList);
@@ -1120,7 +1120,7 @@
                     data4jsonp(jsApiHost + '/api/address/CityListByJson').success(function (ret) {
                         if (ret.Code == 200) {
                             var city = ret.Data.City;
-                            addressService.cityList = city;
+                            addressService.cityList = JSON.parse(city);
                             addressService.cityObj = parseCity(JSON.parse(city));
                             cb && cb();
                             //保存放在主流程之后
