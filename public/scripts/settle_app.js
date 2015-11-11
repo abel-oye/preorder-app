@@ -635,7 +635,10 @@
             };
 
             $scope.insterAddress = function () {
-                AddressService.item = {};
+                AddressService.item = {
+                    ProvinceName:'北京市'
+                };
+                AddressService.selectCity();
                 switchAddressState(2);
             };
 
