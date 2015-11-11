@@ -9,7 +9,11 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 
+var PHR = require('perfmon-http-request');
+
+
 module.exports = function(app, config) {
+
   var env = process.env.NODE_ENV || 'development';
   app.locals.ENV = env;
 
@@ -25,10 +29,13 @@ module.exports = function(app, config) {
   app.use(bodyParser.urlencoded({
     extended: true
   }));
+  app.use(PHR.run(config.monitorConfig))
   app.use(cookieParser());
   app.use(compress());
   app.use(express.static(config.root + '/public'));
   app.use(methodOverride());
+
+
 
   var controllers = glob.sync(config.root + '/app/controllers/*.js');
   controllers.forEach(function (controller) {
