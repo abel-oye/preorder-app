@@ -636,9 +636,12 @@
 
             $scope.insterAddress = function () {
                 AddressService.item = {
-                    ProvinceName:'北京市'
+                    ProvinceName:'选择省份',
+                    CityName:'选择市',
+                    DistrictName:'选择县区'
                 };
-                AddressService.selectCity();
+                AddressService.selectCity(1);
+                AddressService.areaCity(1);
                 switchAddressState(2);
             };
 
@@ -1055,6 +1058,7 @@
             addressService.selectCity = function () {
                 //如果未选择省 清空市
                 if(addressService.item.ProvinceName){
+                    addressService.selectCityObj = [];
                     for (var i in addressService.cityList['0']) {
                         if (addressService.item.ProvinceName == addressService.cityList['0'][i]) {
                             addressService.select.CityNameId = '0,' + i;
@@ -1064,8 +1068,9 @@
                 }else{
                     //重置上次选择
                     addressService.selectCityObj = {};
-                    addressService.item.CityName = '';
-                    addressService.item.DistrictName = '';
+                    addressService.item.CityName = '选择市';
+                    addressService.item.DistrictName = '选择县区';
+
                 }
 
                 //addressService.select.DistrictNameId = undefined;
@@ -1075,6 +1080,7 @@
             addressService.areaCity = function () {
                 //如果未选择市 清空区
                 if(addressService.item.CityName){
+                    addressService.selectDistrictObj= [];
                     for (var i in addressService.cityList[addressService.select.CityNameId]) {
                         if (addressService.item.CityName == addressService.cityList[addressService.select.CityNameId][i]) {
                             //addressService.select.DistrictNameId = addressService.select.CityNameId + ',' + i;
@@ -1083,7 +1089,7 @@
                     }
                 }else{
                     addressService.selectDistrictObj = {};
-                    addressService.item.DistrictName = '';
+
                 }
 
             };
@@ -1107,6 +1113,7 @@
                     try {
                         addressService.cityList = JSON.parse(cityListStr);
                         addressService.cityObj = parseCity(addressService.cityList);
+                        console.log(addressService.cityObj)
                         cb && cb();
                     }
                     catch (e) {
@@ -1141,14 +1148,20 @@
                 }
 
                 function parseCity(cityObj) {
-                    var cityList = {};
+                    var cityList = {},tempAttr;
                     for (var i in cityObj) {
-                        var tempAttr = [];
+                        tempAttr = [];
                         for (var j in cityObj[i]) {
                             var temp = {};
                             temp['id'] = i + ',' + j;
                             temp['name'] = cityObj[i][j];
                             tempAttr.push(temp);
+                        }
+                        if(i == '0'){
+                            tempAttr.unshift({
+                                id:'',
+                                name:'选择省份'
+                            })
                         }
                         cityList[i] = tempAttr;
                     }
