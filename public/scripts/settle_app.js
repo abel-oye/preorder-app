@@ -1100,7 +1100,7 @@
 
                 var cityListStr = localStorage.getItem('cityListStr');
 
-                if (cityListStr) {
+                if (false && cityListStr) {
                     try {
                         addressService.cityList = JSON.parse(cityListStr);
                         addressService.cityObj = parseCity(addressService.cityList);
