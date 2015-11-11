@@ -39,7 +39,8 @@
   },
   "devDependencies": {
     "gulp-copy": "0.0.2",
-    "gulp-filter": "^3.0.1"
+    "gulp-filter": "^3.0.1",
+    "perfmon-http-request": "0.0.4"
   },
   "eslintConfig": {
     "env": {
