@@ -1157,12 +1157,6 @@
                             temp['name'] = cityObj[i][j];
                             tempAttr.push(temp);
                         }
-                        if(i == '0'){
-                            tempAttr.unshift({
-                                id:'',
-                                name:'选择省份'
-                            })
-                        }
                         cityList[i] = tempAttr;
                     }
                     return cityList;
