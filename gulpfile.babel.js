@@ -83,10 +83,12 @@ gulp.task('html', ['styles'], () => {
         .pipe(gulp.dest(config.dist))
         //.pipe(excludeHtml.restore)
         .pipe($.filter('*.html'))
-        .pipe($.minifyHtml({
+        /*.pipe($.minifyHtml({
             conditionals: true,
-            loose: true
-        }))
+            //loose: true,
+            removeEmptyAttributes:false,
+            removeAttributeQuotes:false
+        }))*/
         .pipe(gulp.dest(config.viewOut));
 });
 

@@ -77,10 +77,14 @@ _gulp2['default'].task('html', ['styles'], function () {
     //.pipe(excludeHtml)
     .pipe(_gulp2['default'].dest(config.dist))
     //.pipe(excludeHtml.restore)
-    .pipe($.filter('*.html')).pipe($.minifyHtml({
+    .pipe($.filter('*.html'))
+    /*.pipe($.minifyHtml({
         conditionals: true,
-        loose: true
-    })).pipe(_gulp2['default'].dest(config.viewOut));
+        //loose: true,
+        removeEmptyAttributes:false,
+        removeAttributeQuotes:false
+    }))*/
+    .pipe(_gulp2['default'].dest(config.viewOut));
 });
 
 _gulp2['default'].task('images', function () {
