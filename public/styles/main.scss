@@ -486,9 +486,9 @@ body{
 //收件地址管理
 .address-edit{
     &-wrapper{
-       width: $rem*650;
+       width: 85%;
        height: 100%;
-       position: absolute;
+       position: fixed;
        z-index:100;
        top: 0;
        right: 0;
@@ -510,6 +510,8 @@ body{
     &-inner{
         position:relative;
         height:100%;
+        min-height:$rem*800;
+        overflow-y:auto;
     }
     &-list{
         & > li{
@@ -596,6 +598,10 @@ body{
 //编辑表单
 .address-form{
    padding:$rem*24;
+   position: absolute;
+   width: 100%;
+   top: 0;
+   left: 0;
    .input-group{
         width:100%;
         margin-bottom:$rem*20;
