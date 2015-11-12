@@ -1243,7 +1243,10 @@
                     return false;
                 }
 
-                if (!obj.CityName || obj.CityName === '' || !obj.DistrictName || obj.DistrictName === '' || !obj.ProvinceName || obj.ProvinceName === '' || !obj.Details || obj.Details === '' || !obj.PostCode || obj.PostCode === '') {
+                if (!obj.CityName || obj.CityName === '' || obj.CityName === '选择市'
+                    || !obj.DistrictName || obj.DistrictName === '' || obj.DistrictName === '选择县区'
+                    || !obj.ProvinceName || obj.ProvinceName === '' || obj.ProvinceName === '选择省份'
+                    || !obj.Details || obj.Details === '' || !obj.PostCode || obj.PostCode === '') {
                     toast('地址与邮编填写不完整');
                     return false;
                 }
