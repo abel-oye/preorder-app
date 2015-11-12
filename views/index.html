@@ -63,6 +63,7 @@
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==5"><i class="icon-beihai-bonded"></i>贝海保税</span>
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==3"> <i class="icon-beihai-directMail"></i>贝海直邮</span>
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==4"> <i class="icon-seller-bonded"></i>卖家保税</span></p>
+                                <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==2"> <i class="icon-zhiyou"></i>卖家保税</span></p>
                             <div class="attr">
                                 <strong>&yen;{{p.QuotePrice.toFixed(2)}}</strong>
                                 <del ng-if="p.OriginPrice && p.OriginPrice != p.QuotePrice">&yen;{{p.OriginPrice.toFixed(2)}}</del>
