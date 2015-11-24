@@ -760,7 +760,7 @@
                     data4jsonp(jsApiHost + '/api/PreOrder/SaveOrder', {
                         params: JSON.stringify(data),
                         orderSource: YmtApi.utils.getOrderSource(),
-                        ClientType: /ios/ig.test(ua) ? 1 : /Android|Linux/ig.test(ua) ? 2 : 0
+                        ClientType: /\(i[^;]+;( U;)? CPU.+Mac OS X/ig.test(ua) ? 1 : /Android|Linux/ig.test(ua) ? 2 : 0
                     }).success(function (res) {
                         isPay = true;
                         if (res.Code == 200) {
