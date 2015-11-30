@@ -756,11 +756,13 @@
                             useragent: op['useragent']
                         };
                     }
-                    var ua = window.navigator.userAgent;
+                    var ua = window.navigator.userAgent,
+                        search = YmtApi.utils.getUrlObj();
                     data4jsonp(jsApiHost + '/api/PreOrder/SaveOrder', {
                         params: JSON.stringify(data),
                         orderSource: YmtApi.utils.getOrderSource(),
-                        ClientType: /\(i[^;]+;( U;)? CPU.+Mac OS X/ig.test(ua) ? 1 : /Android|Linux/ig.test(ua) ? 2 : 0
+                        ClientType: /\(i[^;]+;( U;)? CPU.+Mac OS X/ig.test(ua) ? 3 : /Android|Linux/ig.test(ua) ? 4 : 0,
+                        DeviceId: search.DeviceId || search.DeviceToken || '0000000'
                     }).success(function (res) {
                         isPay = true;
                         if (res.Code == 200) {
