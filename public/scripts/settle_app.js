@@ -356,8 +356,18 @@
                 }else{
                     $scope.selectCoupon(order.selectCoupon);
                 }
+            }
 
-                
+            //切换优惠券输入状态
+            $scope.switchInputCoupon = function(order){
+                var promotionUsed = order.PromotionUsed;
+
+                if(promotionUsed.UseCouponCode){
+                    order.PromotionUsed = {};
+                    acountDiscount();
+                }else{
+                    couponInfo && confirmCoupon()
+                }
             }
 
             /**
@@ -401,7 +411,7 @@
 
                 currProdcut.PromotionUsed.UseCouponAmount = parseInt(couponInfo.Type == 1 ? couponInfo.Value : 0, 10);
 
-                currProdcut.useDiscount = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
+                //currProdcut.useDiscount = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
 
                 acountDiscount();
             };

@@ -100,7 +100,7 @@
                                 <span class="label">优惠券</span>
                                 <span class="coupon-select" ng-click="openUserCoupon(i)">{{i.useDiscount||'选择优惠券'}} <i class="icon-arrow-down"></i></span>
                             </li>
-                            <li ng-if="i.Promotion.CanUseCoupon" ng-click1="openInputCoupon(i)">
+                            <li ng-if="i.Promotion.CanUseCoupon" ng-click="switchInputCoupon(i)">
                                 <label><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && i.PromotionUsed.inputCouponCode}"></i></label>
                                 <span class="label">优惠码</span>
                                 <input class="coupon-code" type="text" name="" value="" placeholder="输入优惠码" ng-model="coupon.code" ng-blur="confirmInputCoupon(i)">
