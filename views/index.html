@@ -113,7 +113,7 @@
                         <input ng-model="leaveMessage.content" placeholder="说说~"/>
                     </div>
                     <div class="declare">
-                        <a ng-click="">我已授权委托洋码头申报海关购买海外商品</a>
+                        <a ng-click="openEntrust()">我已授权委托洋码头申报海关购买海外商品</a>
                     </div>
                 </div>
             </div>
@@ -186,7 +186,7 @@
             </div>
         </div>
 
-        <div class="dialog ng-cloak dialog-select-wrapper" ng-class="{open:couponOpen}">
+        <div class="dialog ng-cloak dialog-area dialog-select-wrapper" ng-class="{open:couponOpen}">
             <div class="dialog-content">
                 <div class="title">
                     共有{{couponsList.length || 0}}张优惠券
@@ -202,6 +202,19 @@
                 <div class="my-discount-msg" ng-if="!couponLoading && !(couponsList&&couponsList.length)">没有可使用的优惠券~~</div>
             </div>
         </div>
+
+        <div class="dialog ng-cloak dialog-area  entrust-wrapper" ng-class="{open:entrustOpenStatus}">
+            <div class="dialog-content">
+                <div class="title">
+                   个人申报委托协议
+                </div>
+                <div class="content">
+                    本人承诺所购买商品系个人合理自用，现委托商家及其合作伙伴代理申报、代缴税款等通关事宜，本人保证遵守《海关法》和国家相关法律法规，保证所提供的身份信息和收货信息真实完整，无侵犯他人权益的行为，以上委托关系系如实填写，本人充分了解相应法律法规并愿意接受海关、检验检疫机构及其他监管部门的监管，并承担相应法律责任。
+                </div>
+                    <button class="btn full-btn btn-primary" ng-click="closeMask()">关闭</button>
+            </div>
+        </div>
+
         <div class="address-mask-fix ng-cloak" ng-class="{open:!!addressState}" ng-click="closeAddressState()" disabled-scroll="">
             <div class="address-mask-close">
                 <i class="icon-arrow-right"></i>

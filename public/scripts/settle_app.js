@@ -563,6 +563,7 @@
                 $scope.maskOpen = false;
                 $scope.couponOpen = false;
                 $scope.validateStep = 0;
+                $scope.entrustOpenStatus = false;
 
             };
 
@@ -598,6 +599,11 @@
                 switchAddressState(1);
                 AddressService.queryAddressList();
             };
+
+            $scope.openEntrust = function(){
+                $scope.entrustOpenStatus = true;
+                $scope.maskOpen = true;
+            }
 
             //获得地址服务
             $scope.AddressService = AddressService;
