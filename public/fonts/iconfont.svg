@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg">
 <metadata>
-Created by FontForge 20120731 at Sun Nov  8 01:08:44 2015
+Created by FontForge 20120731 at Mon Dec 21 16:02:09 2015
  By Ads
 </metadata>
 <defs>
@@ -13,13 +13,13 @@ Created by FontForge 20120731 at Sun Nov  8 01:08:44 2015
     font-stretch="normal"
     units-per-em="1024"
     panose-1="2 0 6 3 0 0 0 0 0 0"
-    ascent="812"
-    descent="-212"
+    ascent="896"
+    descent="-128"
     x-height="792"
-    bbox="0 -212 1024 812"
+    bbox="0 -212 1024 850"
     underline-thickness="50"
     underline-position="-100"
-    unicode-range="U+0078-E60B"
+    unicode-range="U+0078-E60D"
   />
 <missing-glyph horiz-adv-x="374" 
 d="M34 0v682h272v-682h-272zM68 34h204v614h-204v-614z" />
@@ -113,5 +113,10 @@ d="M512 812q-139 0 -257 -68.5t-186.5 -186.5t-68.5 -257t68.5 -257t186.5 -186.5t25
 t-5.5 2.5l-5 4l-165 179l-65 -34q-7 -142 -12 -155q-3 -9 -11 -15t-19 -6q-18 0 -33 17q-6 7 -13.5 16.5t-15 20.5t-15 22.5t-15 23.5t-13.5 22.5t-12.5 21t-10 16.5t-6.5 12q-122 69 -166 112q-16 16 -11 36q3 11 10.5 18.5t15.5 9.5q14 5 154 7l38 63l-176 177
 q-17 32 -8 56q7 17 25 23l4 1h5q71 -9 152 -32t122 -38.5t75 -30.5q95 53 164 89.5t82 38.5h6q21 0 36 -16q18 -18 13 -42zM794 572l-5 3q-11 -3 -86.5 -43.5t-153.5 -84.5l-10 -5l-10 4q-18 9 -51.5 23t-121.5 41t-163 37q4 -10 5 -13l194 -193l-67 -112h-12
 q-103 -2 -145 -5q49 -43 155 -102l5 -3l3 -5q60 -103 92 -143q3 47 8 136v12l116 60l185 -200q7 -4 13 -5q-3 27 -7.5 56t-10 54t-12.5 52.5t-13 47.5t-13.5 42.5t-11.5 35t-10 27.5t-6.5 17t-2.5 7l-5 10l6 9q130 212 138 237v-1v1z" />
+    <glyph glyph-name="uniE60C" unicode="&#xe60c;" 
+d="M687 384l-415 -415q-9 -9 -9 -21.5t9 -21.5q6 -6 14 -8t16 0t14 8l436 436v1h1l1 1v0l1 1v0v1h1v1l1 1v1v0l1 1v1v1h1v1q0 1 1 2v0v1v0v1v1v0l1 1v1v1v1v1v0v1v0v1v1v0v1v1l-1 1v1v2q-1 1 -1 2q-2 6 -7 11l-436 436q-9 9 -22 9t-22 -9t-9 -21.5t9 -21.5z" />
+    <glyph glyph-name="uniE60D" unicode="&#xe60d;" 
+d="M512 209l-415 415q-17 17 -38 4q-3 -3 -5 -4q-6 -6 -8 -14t0 -16t8 -14l436 -436h1v-1l1 -1v0l1 -1h1v-1h1l1 -1v0h1l1 -1h1h1v-1h1q1 0 2 -1h1v0h1h1v0l1 -1h1h1v0h1v0h1h1v0h1h1v0h2l1 1h1h2q1 1 2 1l11 7l436 436q9 9 9 22q0 6 -2 11.5t-7 10.5q-9 9 -21.5 9t-21.5 -9
+z" />
   </font>
 </defs></svg>

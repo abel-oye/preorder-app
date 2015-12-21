@@ -126,6 +126,14 @@
      */
     var app = angular.module('preOrderApp', ['ymt.UI']);
 
+    app.filter('phoneSecrecy',function(){
+        return function(num){
+            return (num + '').replace(/\d{3}(?:(\d{4}))\d{4}/,function(o,r){
+                return o.replace(r,'***');
+            });
+        }
+    });
+
     app.controller('preOrderApp.controller.index', [
         '$scope',
         '$http',
@@ -312,7 +320,7 @@
                 };
             //打开使用优惠券
             $scope.openUserCoupon = function (order) {
-                if(order.PromotionUsed.UseCouponCode){
+                /*if(order.PromotionUsed.UseCouponCode){
                     order.PromotionUsed.UseCouponCode = '';
                     acountDiscount();
                     order.useDiscount = '';
@@ -325,13 +333,42 @@
                     if (!$scope.couponsList) {
                         getCoupon(order);
                     }
+                }*/
+
+                $scope.couponOpen = true;
+                $scope.maskOpen = true;
+
+                currProdcut = order;
+
+                if (!$scope.couponsList) {
+                    getCoupon(order);
                 }
 
             };
 
+            //切换优惠券选择状态
+            $scope.switchCoupon = function(order){
+                var promotionUsed = order.PromotionUsed;
+
+                if(promotionUsed.UseCouponCode){
+                    order.PromotionUsed = {};
+                    acountDiscount();
+                }else{
+                    $scope.selectCoupon(order.selectCoupon);
+                }
+
+                
+            }
+
+            /**
+             * 选择可使用的优惠券
+             */
             $scope.selectCoupon = function (coupon) {
+                //作为切换选中和取消选中的优惠券计算；
+                currProdcut.selectCoupon = coupon;
+
                 currProdcut.PromotionUsed = {};
-                currProdcut.PromotionUsed.UseCouponCode = coupon.CouponCode;
+                currProdcut.PromotionUsed.UseCouponCode =  coupon.CouponCode;
 
                 currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
 
@@ -342,23 +379,6 @@
                 acountDiscount();
 
                 $scope.closeMask();
-            };
-
-            //打开输入优惠券
-            $scope.openInputCoupon = function (order) {
-               if(order.PromotionUsed.inputCouponCode){
-                    order.PromotionUsed.UseCouponCode = '';
-                    order.PromotionUsed.inputCouponCode = false;
-                    currProdcut.PromotionUsed.UseCouponAmount = 0;
-                    acountDiscount();
-                    order.useDiscount = '';
-                }else{
-                   $scope.validateStep = 1;
-                   $scope.maskOpen = true;
-                   $scope.coupon.code = '';
-
-                   currProdcut = order;
-                }
             };
 
             var currCoupon = {
@@ -387,11 +407,23 @@
             };
 
             //确认输入优惠券
-            $scope.confirmInputCoupon = function () {
-                if (!$scope.coupon.code) {
+            $scope.confirmInputCoupon = function (order) {
+                var code = $scope.coupon.code;
+                if (!code) {
                     toast('优惠码不能为空');
                     return;
                 }
+
+                if(order.PromotionUsed.inputCouponCode){
+                     order.PromotionUsed.UseCouponCode = '';
+                     currProdcut.PromotionUsed.UseCouponAmount = 0;
+                     acountDiscount();
+                     order.useDiscount = '';
+                 }else{
+                    //$scope.coupon.code = '';
+
+                    currProdcut = order;
+                 }
 
                 currCoupon.CouponCode = $scope.coupon.code = String.prototype.toLocaleUpperCase.call($scope.coupon.code);
 
@@ -409,7 +441,7 @@
                     params: JSON.stringify({
                         ProductsAmount: ProductsAmount,
                         SellerId: currProdcut.SellerId,
-                        CouponCode: $scope.coupon.code
+                        CouponCode: code
                     }),
                     PlatformType: YmtApi.utils.getOrderSource()
                 }).success(function (ret, code) {
@@ -422,8 +454,7 @@
                         if (data.Status + '' === '1') {
                             confirmCoupon();
                             $scope.closeMask();
-                        }
-                        else if (data.Status == 2) {
+                        }else if (data.Status == 2) {
                             //进行身份证绑定
                             $scope.validateStep = 2;
                         }
@@ -539,7 +570,7 @@
                     product.PromotionUsed = {};
                     product.PromotionUsed.UseGiftAmount = product.usedGift;
 
-                    product.useDiscount = '￥' + product.usedGift + '红包';
+                    //product.useDiscount = '￥' + product.usedGift + '红包';
                 }
 
                 acountDiscount();

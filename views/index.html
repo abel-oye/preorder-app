@@ -21,7 +21,7 @@
     <section class="settle-container  ng-cloak" ng-controller="preOrderApp.controller.index">
         <!--收件地址-->
         <address class="address-wrapp ng-cloak" ng-click="openAddress()" ng-if="orderInfo.Orders">
-            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId" >收件人 : {{orderInfo.Orders[0].Address.Addressee}} <span class="fr">{{orderInfo.Orders[0].Address.Mobile}}</span></h3>
+            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId" >收件人: {{orderInfo.Orders[0].Address.Addressee}} <span class="fr">{{orderInfo.Orders[0].Address.Mobile | phoneSecrecy}}</span></h3>
             <div ng-if="orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId" >
                 {{orderInfo.Orders[0].Address.Area}} {{orderInfo.Orders[0].Address.DetailAddress}}
             </div>
@@ -73,36 +73,47 @@
                         </div>
                     </li>
                 </ul>
+                <div class="settle-count">
+                    <div><b>共 2 件商品</b> 合计：<span class="price price-num">&yen;<strong>140</strong>.00</span></div>
+                    <div class="freight-total">(含运费：<span class="price-num">&yen;<strong>40</strong>.00</span>)</div>
+                </div>
                 <div class="buyer-ft">
                     <!--优惠-->
                     <div class="discount-wrapper ng-cloak" ng-if="i.Promotion.CanUseCoupon||i.Promotion.CanUseGift||i.Promotion.CanUseFreeCard">
                         <div class="discount-hd">
                             我使用的优惠
-                            <span class="">使用优惠: <strong>{{i.useDiscount || '未选择优惠方式'}}</strong></span>
                         </div>
                         <ol class="discount-list" ng-init="canUseGift(i)">
                             <!--stauts change : disabled -->
-                            <li ng-if="i.Promotion.CanUseCoupon" ng-click="openUserCoupon(i)">
+                            <li class="gift-wrapper" ng-if="i.Promotion.CanUseGift" ng-class="{'disabled':i.Promotion.CanUseGift && i.usedGift==0}" ng-click="useGift(i)" ng-init="i.PromotionUsed.UseGiftAmount = 0">
+                                <label class="fl"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseGiftAmount}"></i></label>
+                                <span class="label">
+                                    红包 金额 &yen;{{i.usedGift}}
+                                </span>
+                                <div class="sub-label">
+                                    最多抵扣本次支付金额的50%
+                                </div>
+                            </li>
+                            <li ng-if="i.Promotion.CanUseCoupon" >
                                 <!--stauts change : selected-->
-                                <label ng-click=""><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && !i.PromotionUsed.inputCouponCode}"></i></label>使用优惠券
-                                <i class="icon-arrow-right"></i>
+                                <label ng-click="switchCoupon(i)"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && !i.PromotionUsed.inputCouponCode}"></i></label>
+                                <span class="label">优惠券</span>
+                                <span class="coupon-select" ng-click="openUserCoupon(i)">{{i.useDiscount||'选择优惠券'}} <i class="icon-arrow-down"></i></span>
                             </li>
-                            <li ng-if="i.Promotion.CanUseCoupon" ng-click="openInputCoupon(i)">
-                                <label><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && i.PromotionUsed.inputCouponCode}"></i></label>输入优惠券编码
-                                <i class="icon-arrow-right"></i>
-                            </li>
-                            <li ng-if="i.Promotion.CanUseGift" ng-class="{'disabled':i.Promotion.CanUseGift && i.usedGift==0}" ng-click="useGift(i)" ng-init="i.PromotionUsed.UseGiftAmount = 0">
-                                <label><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseGiftAmount}"></i></label>使用红包
-                                <small>订单可使用最大的红包数 <strong>&yen;{{i.usedGift}}</strong></small>
+                            <li ng-if="i.Promotion.CanUseCoupon" ng-click1="openInputCoupon(i)">
+                                <label><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && i.PromotionUsed.inputCouponCode}"></i></label>
+                                <span class="label">优惠码</span>
+                                <input class="coupon-code" type="text" name="" value="" placeholder="输入优惠码" ng-model="coupon.code" ng-blur="confirmInputCoupon(i)">
                             </li>
                         </ol>
                     </div>
-                    <!-- <div class="settle-count">
-                        <span>商品数量: 2 </span><span>含运费:&yen;100</span><span>合计：</span><strong>&yen;1555</strong>
-                    </div> -->
-
+                    <!--留言-->
                     <div class="leaveMessage">
-                        <textarea name="" id="" cols="30" rows="3" ng-model="leaveMessage.content" placeholder="给卖家留言"></textarea>
+                        <label for="">留言:</label>
+                        <input ng-model="leaveMessage.content" placeholder="说说~"/>
+                    </div>
+                    <div class="declare">
+                        <a ng-click="">我已授权委托洋码头申报海关购买海外商品</a>
                     </div>
                 </div>
             </div>
@@ -114,18 +125,17 @@
                 <p>该商品状态已变更，请返回重试。</p>
             </div>
         </div>
-<!--         <div class="protocol">
-     <label><i class="icon-checkBox-selected"></i></label> 我已同意 <b>《进口个人委托申报委托》</b>
-</div> -->
         <div class="settle-tools-wrapper">
             <div class="settle-tools">
                 <div class="text">
-                    <div>
-                        共计 {{productNumber || 0}} 件商品,合计:<strong>&yen;{{ orderInfo.TotalPrice || 0 }}</strong>
-                    </div>
-                    <div class="a">
-                        <small>含运费: &yen;{{orderInfo.TotalFreight || 0 }}   优惠扣除: - &yen;{{discountPrice}} </small>
-                    </div>
+                   <!--  <div>
+                       共计 {{productNumber || 0}} 件商品,合计:<strong>&yen;{{ orderInfo.TotalPrice || 0 }}</strong>
+                   </div>
+                   <div class="a">
+                       <small>含运费: &yen;{{orderInfo.TotalFreight || 0 }}   优惠扣除: - &yen;{{discountPrice}} </small>
+                   </div> -->
+                    <span class="fl total">共 {{productNumber || 0}} 件</span>
+                    <strong>需支付:{{ orderInfo.TotalPrice || 0 }}</strong>
                 </div>
                 <button class="btn btn-primary" type="button" ng-click="saveOrder()" ng-class="{'btn-invalid':!canSubmint}">立即购买</button>
             </div>
@@ -175,10 +185,11 @@
                 </div>
             </div>
         </div>
-        <div class="dialog ng-cloak" ng-class="{open:couponOpen}">
+
+        <div class="dialog ng-cloak dialog-select-wrapper" ng-class="{open:couponOpen}">
             <div class="dialog-content">
                 <div class="title">
-                    我的优惠券
+                    共有{{couponsList.length || 0}}张优惠券
                 </div>
                 <div class="beat-loading" ng-if="couponLoading"><div class="rect1"></div><div class="rect2"></div><div class="rect3"></div><div class="rect4"></div><div class="rect5"></div></div>
                 <ul class="my-discount-list">
@@ -186,7 +197,6 @@
                     <li class="my-discount-item" ng-repeat="i in couponsList" ng-click="selectCoupon(i)">
                         <h3>满{{i.CouponOrderValue}}{{(i.UseType==1?"抵":"返")}}{{i.CouponValue}}</h3>
                         <p>有效期至 {{i.ValidEnd}}</p>
-                        <p>编号: {{i.CouponCode}}</p>
                     </li>
                 </ul>
                 <div class="my-discount-msg" ng-if="!couponLoading && !(couponsList&&couponsList.length)">没有可使用的优惠券~~</div>
