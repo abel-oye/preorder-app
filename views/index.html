@@ -100,6 +100,10 @@
                     <!-- <div class="settle-count">
                         <span>商品数量: 2 </span><span>含运费:&yen;100</span><span>合计：</span><strong>&yen;1555</strong>
                     </div> -->
+
+                    <div class="leaveMessage">
+                        <textarea name="" id="" cols="30" rows="3" ng-model="leaveMessage.content" placeholder="给卖家留言"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,7 +127,7 @@
                         <small>含运费: &yen;{{orderInfo.TotalFreight || 0 }}   优惠扣除: - &yen;{{discountPrice}} </small>
                     </div>
                 </div>
-                <button class="btn btn-primary" type="button" ng-click="saveOrder()">立即购买</button>
+                <button class="btn btn-primary" type="button" ng-click="saveOrder()" ng-class="{'btn-invalid':!canSubmint}">立即购买</button>
             </div>
         </div>
 

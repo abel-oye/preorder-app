@@ -166,19 +166,25 @@
 
             $scope.load = false;
 
+            $scope.leaveMessage = {
+                content:''
+            }
+
             data4jsonp(jsApiHost + '/api/preorder/ListOrderInfo')
                 .success(function (data) {
                      $scope.load = true;
                     if (data.Code == 200) {
+
+
                         var result = data.Data;
 
                         $scope.orderInfo = result;
 
-
-
                         var orders = result.Orders;
 
                         if(orders && orders[0]){
+                            //存在可以提交的订单
+                            $scope.canSubmint = true;
 
                             //保存原价
                             $scope.originalTotal = result.TotalPrice = parseFloat(result.TotalPrice.toFixed(2));
@@ -655,9 +661,10 @@
                 });
             };
 
+            //是否可以提交
+            $scope.canSubmint = false;
 
-            var isSubmint = false,
-                isPay = false;
+            var isPay = false;
 
             $scope.saveOrderIng = false;
             $scope.idCard = {
@@ -681,14 +688,17 @@
              * 保存订单
              */
             $scope.saveOrder = function () {
+
                 if (isPay) {
                     return;
                 }
 
                 //防止表单重复提交
-                if (isSubmint) {
+                if (!$scope.canSubmint) {
                     return toast('订单已生成，请勿重复提交');
                 }
+
+                $scope.canSubmint = false;
 
                 if (!$scope.orderInfo) {
                     return;
@@ -762,12 +772,12 @@
                         params: JSON.stringify(data),
                         orderSource: YmtApi.utils.getOrderSource(),
                         ClientType: /\(i[^;]+;( U;)? CPU.+Mac OS X/ig.test(ua) ? 3 : /Android|Linux/ig.test(ua) ? 4 : 0,
-                        DeviceId: search.DeviceId || search.DeviceToken || '0000000'
+                        DeviceId: search.DeviceId || search.DeviceToken || '0000000',
+                        channel:(ua.match(/Channel\=(?:([^\s]*))/i) || [])[1] || 'wap',//获得app下载渠道
+                        LeaveMessage:$scope.leaveMessage.content//留言
                     }).success(function (res) {
-                        isPay = true;
-                        if (res.Code == 200) {
+                        if (res.Code == 200 && false) {
                             var result = res.Data;
-                            isSubmint = true;
 
                             if (!(result.TradingIds && result.TradingIds[0])) {
                                 toast('获取交易号失效');
@@ -795,6 +805,9 @@
 
                         }
                         else {
+                            isPay = false;
+                            //只要失败
+                            $scope.canSubmint = true;
                             toast(res.Msg);
                         }
                     });
