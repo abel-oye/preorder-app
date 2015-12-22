@@ -365,6 +365,7 @@
 
                             //默认选中第一张
                             if($scope.couponsList[0]){
+                                currProdcut = order;
                                 $scope.selectCoupon($scope.couponsList[0]);
                             }else{
                                 order.useDiscount = '没有可使用的优惠券';
@@ -403,7 +404,7 @@
             $scope.switchCoupon = function(order){
                 var promotionUsed = order.PromotionUsed;
 
-                if(promotionUsed.UseCouponCode){
+                if(promotionUsed.UseCouponCode && !promotionUsed.inputCouponCode){
                     order.PromotionUsed = {};
                     acountDiscount();
                 }else{
@@ -420,7 +421,7 @@
             $scope.switchInputCoupon = function(order){
                 var promotionUsed = order.PromotionUsed;
 
-                if(promotionUsed.UseCouponCode){
+                if(promotionUsed.UseCouponCode && promotionUsed.inputCouponCode){
                     order.PromotionUsed = {};
                     acountDiscount();
                 }else{
@@ -485,7 +486,7 @@
                      order.PromotionUsed.UseCouponCode = '';
                      currProdcut.PromotionUsed.UseCouponAmount = 0;
                      acountDiscount();
-                     order.useDiscount = '';
+                     //order.useDiscount = '';
                  }else{
                     //$scope.coupon.code = '';
 
@@ -1087,6 +1088,24 @@
                 link: function (scope, ele) {
                     ele[0].addEventListener('touchmove', function (event) {
                         event.preventDefault();
+                    }, false);
+                }
+            };
+        }
+    ]);
+
+
+    /**
+     * 适配textarea 的高度
+     */
+    app.directive('adaptTextareaMinheight', [
+        function () {
+            return {
+                restrict: 'A',
+                link: function (scope, ele, attr) {
+                    ele[0].addEventListener('change', function (event) {
+                        var row = this.value.split("\n").length-1;
+                        this.style.minHeight = attr.adaptTextareaMinheight*row+'px';
                     }, false);
                 }
             };

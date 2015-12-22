@@ -95,7 +95,7 @@
                                     最多抵扣本次支付金额的50%
                                 </div>
                             </li>
-                            <li ng-if="i.Promotion.CanUseCoupon" ng-class="{'disabled':couponsList}">
+                            <li ng-if="i.Promotion.CanUseCoupon" ng-class="{'disabled':!couponsList[0]}">
                                 <!--stauts change : selected-->
                                 <label ng-click="switchCoupon(i)"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseCouponCode && !i.PromotionUsed.inputCouponCode}"></i></label>
                                 <span class="label">优惠券</span>
@@ -111,7 +111,7 @@
                     <!--留言-->
                     <div class="leaveMessage">
                         <label for="">留言:</label>
-                        <textarea ng-model="leaveMessage.content" placeholder="说说~" maxlength="80"></textarea>
+                        <textarea ng-model="leaveMessage.content" placeholder="说说~" maxlength="80" adapt-textarea-minheight="45" row="4"></textarea>
                     </div>
                     <div class="declare">
                         <a ng-click="openEntrust()">我已授权委托洋码头申报海关购买海外商品</a>
