@@ -178,11 +178,51 @@
                 content:''
             }
 
+            /**
+             * 小计价格
+             * @param orderf
+             */
+            $scope.totalPrice = function(order){
+                var i=0,len=order.Products.length,price=0;
+                for(;i<len;i++){
+                    price += order.Products[i].QuotePrice;
+                }
+                return price;
+            }
+
+            /**
+             * 小计运费
+             * @param order
+             */
+            $scope.totalFreight = function(order){
+                var i=0,len=order.Products.length,freight=0;
+                for(;i<len;i++){
+                    freight += order.Products[i].Freight;
+                }
+                return freight;
+            }
+            /**
+             * 统计商品数量
+             * @param order {object} 订单对象 如果不传递则获取所有订单商品
+             *                       数量
+             */
+            $scope.totalProNum = function(order){
+                var num = 0,
+                    i = 0,
+                    len = orders.length;
+                for (; i < len; i++) {
+                    num += orders[i].ProductNumber;
+                }
+                return num;
+            }
+
+            /**
+             * 获得预订单列表
+             */
             data4jsonp(jsApiHost + '/api/preorder/ListOrderInfo')
                 .success(function (data) {
                      $scope.load = true;
                     if (data.Code == 200) {
-
 
                         var result = data.Data;
 
@@ -191,6 +231,11 @@
                         var orders = result.Orders;
 
                         if(orders && orders[0]){
+                            //获得可使用的优惠券列表
+                            //默认先拉取第一个商品的优惠券信息
+                            //@TODO 如果要支持多订单这里需要调整
+                            getCoupon(orders[0]);
+
                             //存在可以提交的订单
                             $scope.canSubmint = true;
 
@@ -210,6 +255,7 @@
                                 }
                                 return num;
                             })(orders);
+
                         }
 
 
@@ -286,6 +332,10 @@
             $scope.couponOpen = false;
             $scope.validateStep = 0;
 
+            /**
+             * 优惠券列表加载状态
+             * @type {Boolean}
+             */
             $scope.couponLoading = true;
 
             var currProdcut,
@@ -309,8 +359,16 @@
                         $scope.couponLoading = false;
                         if (ret.Code == 200) {
                             var result = ret.Data;
-                            $scope.couponsList = result.Coupons;
-                            $scope.couponsDesc = $scope.CouponsList && $scope.CouponsList.length === 0 ? '没有可使用的优惠券' : '';
+                            order.isLoadCoupon = true;
+
+                            $scope.couponsList = result.Coupons || [];
+
+                            //默认选中第一张
+                            if($scope.couponsList[0]){
+                                $scope.selectCoupon($scope.couponsList[0]);
+                            }else{
+                                order.useDiscount = '没有可使用的优惠券';
+                            }
                         }
                         else {
                             toast(ret.Msg);
@@ -320,29 +378,24 @@
                 };
             //打开使用优惠券
             $scope.openUserCoupon = function (order) {
-                /*if(order.PromotionUsed.UseCouponCode){
-                    order.PromotionUsed.UseCouponCode = '';
-                    acountDiscount();
-                    order.useDiscount = '';
-                }else{
-                    $scope.couponOpen = true;
-                    $scope.maskOpen = true;
 
-                    currProdcut = order;
+                //判断当前订单是否已经加载过优惠券列表了
+                if(!order.isLoadCoupon){
+                    return toast('正在加载可使用的优惠券');
+                }
 
-                    if (!$scope.couponsList) {
-                        getCoupon(order);
-                    }
-                }*/
+                if(!$scope.couponsList[0]){
+                    return;
+                }
 
                 $scope.couponOpen = true;
                 $scope.maskOpen = true;
 
-                currProdcut = order;
+                currProdcut = order;                
 
-                if (!$scope.couponsList) {
+                /*if (!$scope.couponsList) {
                     getCoupon(order);
-                }
+                }*/
 
             };
 
@@ -354,7 +407,12 @@
                     order.PromotionUsed = {};
                     acountDiscount();
                 }else{
-                    $scope.selectCoupon(order.selectCoupon);
+                    //判断是否被选择过优惠券
+                    if(order.selectCoupon){
+                        $scope.selectCoupon(order.selectCoupon);
+                    }else{
+                        $scope.openUserCoupon(order);
+                    }
                 }
             }
 
@@ -420,7 +478,6 @@
             $scope.confirmInputCoupon = function (order) {
                 var code = $scope.coupon.code;
                 if (!code) {
-                    toast('优惠码不能为空');
                     return;
                 }
 
@@ -711,7 +768,7 @@
             //是否可以提交
             $scope.canSubmint = false;
 
-            var isPay = false;
+            $scope.isPay = false;
 
             $scope.saveOrderIng = false;
             $scope.idCard = {
@@ -736,7 +793,7 @@
              */
             $scope.saveOrder = function () {
 
-                if (isPay) {
+                if ($scope.isPay) {
                     return;
                 }
 
@@ -744,6 +801,8 @@
                 if (!$scope.canSubmint) {
                     return toast('订单已生成，请勿重复提交');
                 }
+
+                $scope.isPay = true;
 
                 $scope.canSubmint = false;
 
@@ -852,7 +911,7 @@
 
                         }
                         else {
-                            isPay = false;
+                            $scope.isPay = false;
                             //只要失败
                             $scope.canSubmint = true;
                             toast(res.Msg);

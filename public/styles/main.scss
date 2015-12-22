@@ -67,25 +67,27 @@ body{
     .add-address{
         height: $rem*100;
         line-height: $rem*100;
-        font-size: $rem*40;;
-        text-align: center;
+        font-size: $rem*30;
+        text-align: right;
+        font-weight: bold;
+        color:#383838;
     }
 }
 //海关提示
 .customs-wrapper{
     background:#fff;
-    padding:$rem*22 $rem*24;
+    padding:0 $rem*20;
     margin-bottom:$rem*18;
 }
 .customs-title{
    font-size:$rem*24;
    color:#686868;
    &-wrapper{
-    height:$rem*42;
-    margin-bottom:$rem*10;
+    height:$rem*72;
+    line-height:$rem*72;
    }
    .icon-customs{
-        font-size:$rem*33;
+       font-size:$rem*22;
    }
    &.fixed{
         position:fixed;
@@ -101,13 +103,12 @@ body{
 
 .customs-input{
     input{
-        padding:$rem*30 $rem*28;
+        padding:$rem*28 0;
         width:100%;
         color:#686868;
-        border:1px solid #9b9b9b;
-        font-size:$rem*30;
-        border-radius:$rem*8;
-        height:$rem*80;
+        //border:1px solid #9b9b9b;
+        font-size:$rem*28;
+        height:$rem*90;
     }
     .msg-text{
         color:#cc3333;
@@ -175,6 +176,7 @@ body{
             height:100%;
         }
     }
+
     .info{
         padding-left:$rem*160;
        position:relative;
@@ -187,11 +189,8 @@ body{
              @include textOverFlow(2);
         }
         &>p{
-            color:#9b9b9b;
+            color:#9B9B9B;
             font-size:$rem*20;
-            &>b{
-                color:#646464;
-            }
             .pro-flag{
                 padding-right:$rem*5;
                 i{
@@ -219,17 +218,20 @@ body{
             color:#383838;
             font-size:$rem*24;
         }
-        del{
+       /*  del{
             color:#c4c4c4;
             display:block;
+        } */
+        .discount{
+            color: #CC3333;
+            font-size:$rem*20;
         }
      }
      .num{
         font-size:$rem*24;
         color:#646464;
-        position:absolute;
-        right:$rem*5;
-        top:$rem*70;
+        text-align: right;
+        margin-top: $rem*20;
      }
 }
 //商品小计
@@ -477,18 +479,18 @@ body{
     } */
     &-item{
         text-align:left;
-        padding:$rem*22 0;
-        border-bottom:1px solid #cecece;
+        padding:$rem*34 $rem*20;
+        border-bottom:1px solid #dedede;
         &:last-child{
             border-bottom:0;
         }
         h3{
             color:$price-color;
-            color:$rem*30;
+            color:$rem*36;
         }
         p{
             font-size:$rem*24;
-            color:#9b9b9b;
+            color:#969696;
         }
         &.disabled{
             h3,p{
@@ -496,10 +498,7 @@ body{
             }
         }
     }
-    &-msg{
-        color:#CECECE;
-        font-size:$rem*26;
-    }
+   
 }
 
 //收件地址管理
@@ -757,7 +756,7 @@ body{
 
 //留言
 .leaveMessage{
-    padding:$rem*18 $rem*24;
+    padding:0 $rem*24;
     background:#fff;
     position:relative;
     font-size: $rem*28;
@@ -767,13 +766,18 @@ body{
         color:#383838;
         font-weight: bold;
     }
-    input{ 
-         font-size: $rem*28; 
+    textarea{ 
+        font-size: $rem*28; 
+        height: $rem*90;
         border:0;      
         width:100%;
-        padding: $rem*10;
+        padding-top: $rem*24;
         background:#fff;
         padding-left:$rem*90;
+        transition: height 0.25s ease-in-out;
+        &:focus{
+            height: $rem*250;
+        }
     }
     
 }
@@ -809,6 +813,15 @@ body{
     transform: translate(0, 100%);
     transition: transform 0.25s ease-in-out;
     display: block;
+    .title{
+        height: $rem*90;
+        line-height: $rem*90;
+        color:#383838;
+        font-size:$rem*34;
+        text-align: center;
+        background: #F8F8F8;
+        border:1px solid #DEDEDE;
+    }
     &.open{
         transform: translate(0, 0);
     }
@@ -817,16 +830,7 @@ body{
 //弹出选择规格
 .dialog-select-wrapper{   
     padding:$rem*0 $rem*20; 
-    .dialog-content{
-        .title{
-            height: $rem*50;
-            line-height: $rem*50;
-            background: #f1f1f1;
-            color:#646464;
-            font-size:$rem*24;
-            text-align: left;
-        }
-    }
+
 }
 
 .entrust-wrapper{  
@@ -839,18 +843,37 @@ body{
             bottom:0;
             left:0;
             width:100%;
-            height: $rem*100;
+            height: $rem*90;
             border-radius:0;
         }
         .title{
             height: $rem*90;
             line-height: $rem*90;
             color:#383838;
-            font-size:$rem*38;
+            font-size:$rem*34;
             text-align: center;
+            background: #F8F8F8;
+            border:1px solid #DEDEDE;
         }
         .content{
-            padding:0 $rem*20;
+            padding:$rem*10 $rem*20;
+            font-size:$rem*28;
+            color:#646464;
+            text-align:left;
+            text-indent: 2em;
         }
     }
+}
+
+//现货标志
+.spot-goods-flag{
+    width: $rem*24;
+    height: $rem*24;
+    line-height: $rem*24;
+    text-align: center;
+    border-radius:50%;
+    display: inline-block;
+    color:#fff;
+    background:#338ADB;
+    font-size:$rem*14;
 }
