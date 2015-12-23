@@ -410,10 +410,11 @@
             $scope.switchCoupon = function(order){
                
                 var promotionUsed = order.PromotionUsed;
-
+                order.useCouponDesc = '';
                 if(promotionUsed.UseCouponCode && !promotionUsed.inputCouponCode){
                     order.PromotionUsed = {};
                     $scope.couponType = 0;
+                    
                     acountDiscount();
                 }else{
                     //判断是否被选择过优惠券
@@ -429,15 +430,20 @@
             $scope.switchInputCoupon = function(order){
                
                 var promotionUsed = order.PromotionUsed;
-
+                order.useCouponDesc = '';
                 if(promotionUsed.UseCouponCode && promotionUsed.inputCouponCode){
-                    order.PromotionUsed = {};
+                    order.PromotionUsed = {};                    
                     $scope.couponType = 0;
                     acountDiscount();
+
                 }else{
                     $scope.couponType = 2;
                     order.PromotionUsed = {};
-                    couponInfo && confirmCoupon()
+                    if(couponInfo){
+                        confirmCoupon()
+                    }else{
+                        $scope.confirmInputCoupon(order);
+                    }
                 }
             }
 
@@ -452,6 +458,7 @@
                 currProdcut.PromotionUsed = {};
                 currProdcut.PromotionUsed.UseCouponCode =  coupon.CouponCode;
 
+                currProdcut.useCouponDesc = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
                 currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
 
                 if (coupon.UseType == 1) {
@@ -487,7 +494,7 @@
 
                 currProdcut.PromotionUsed.UseCouponAmount = parseInt(couponInfo.Type == 1 ? couponInfo.Value : 0, 10);
 
-                //currProdcut.useDiscount = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
+                currProdcut.useCouponDesc = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
 
                 acountDiscount();
 
@@ -535,6 +542,7 @@
                     if (ret.Code == 200) {
                         var data = ret.Data;
                         if (data.Status + '' === '0') {
+                            $scope.couponType = 0;
                             return toast(ret.Msg || '您输入的优惠码不正确或不能使用');
                         }
                         couponInfo = data.Coupon;
@@ -547,6 +555,7 @@
                         }
                     }
                     else {
+                        $scope.couponType = 0;
                         toast(ret.Msg);
                     }
 
@@ -648,6 +657,7 @@
              * 使用红包
              */
             $scope.useGift = function (product, val) {
+
                 if(product.PromotionUsed.UseGiftAmount){
                     product.PromotionUsed.UseGiftAmount = 0;
                     product.useDiscount = '';
@@ -658,7 +668,8 @@
                     product.PromotionUsed = {};
                     product.PromotionUsed.UseGiftAmount = product.usedGift;
 
-                    //product.useDiscount = '￥' + product.usedGift + '红包';
+                    $scope.couponType = 3;
+                    product.useCouponDesc = '￥' + product.usedGift + '红包';
                 }
 
                 $scope.couponType = 0;
@@ -1143,7 +1154,7 @@
                 link: function (scope, ele, attr) {
                     ele[0].addEventListener('change', function (event) {
                         var row = this.value.split("\n").length-1;
-                        this.style.minHeight = attr.adaptTextareaMinheight*row+'px';
+                        this.style.minHeight = attr.adaptTextareaMinheight*row+'rem';
                     }, false);
                 }
             };

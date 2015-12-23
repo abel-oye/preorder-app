@@ -296,9 +296,17 @@ body{
         &.gift-wrapper{
             padding-top:$rem*32;
             line-height: 1.5;
+            position:relative;
             .sub-label{
                 font-size:$rem*22;
                 color:#9b9b9b;
+            }
+            .discount-desc{
+                position: absolute;
+                right: 0;
+                top:50%;
+                margin-top: $rem*-16;
+                transition: transform(0,-100%);
             }
         }
         .coupon-code{
@@ -346,6 +354,13 @@ body{
             .icon-checkBox{
                 color:#cecece;
             }
+        }
+        //优惠描述
+        .discount-desc{
+            color:#cc3333;
+            font-size:$rem*20;
+            margin-right:$rem*10;
+            float: right;
         }
         
     }

@@ -88,31 +88,34 @@
                             <!--stauts change : disabled -->
                             <li class="gift-wrapper" ng-if="i.Promotion.CanUseGift" ng-class="{'disabled':i.Promotion.CanUseGift && i.usedGift==0}" 
                             ng-click="useGift(i)" ng-init="i.PromotionUsed.UseGiftAmount = 0">
-                                <label class="fl"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':i.PromotionUsed.UseGiftAmount}"></i></label>
+                                <label class="fl"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':couponType === 3}"></i></label>
                                 <span class="label">
                                     红包 金额 &yen;{{i.usedGift}}
                                 </span>
                                 <div class="sub-label">
                                     最多抵扣本次支付金额的50%
                                 </div>
+                                <span class="discount-desc" ng-if="couponType === 3">{{i.useCouponDesc}}</span>
                             </li>
                             <li ng-if="i.Promotion.CanUseCoupon" ng-class="{'disabled':!couponsList[0]}">
                                 <!--stauts change : selected-->
                                 <label ng-click="switchCoupon(i)"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':couponType === 1}"></i></label>
                                 <span class="label">优惠券</span>
                                 <span class="coupon-select" ng-click="openUserCoupon(i)">{{i.useDiscount||'请选择优惠券'}} <i class="icon-arrow-down"></i></span>
+                                <span class="discount-desc" ng-if="couponType === 1">{{i.useCouponDesc}}</span>
                             </li>
                             <li ng-if="i.Promotion.CanUseCoupon" >
                                 <label ng-click="switchInputCoupon(i)"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':couponType === 2}"></i></label>
                                 <span class="label">优惠码</span>
                                 <input class="coupon-code" type="text" name="" value="" placeholder="输入优惠码" ng-model="coupon.code" ng-blur="confirmInputCoupon(i)" ng-disabled="couponType === 1">
+                                <span class="discount-desc" ng-if="couponType === 2">{{i.useCouponDesc}}</span>
                             </li>
                         </ol>
                     </div>
                     <!--留言-->
                     <div class="leaveMessage">
                         <label for="">留言:</label>
-                        <textarea ng-model="leaveMessage.content" placeholder="说说~" maxlength="80" adapt-textarea-minheight="45" row="4"></textarea>
+                        <textarea ng-model="leaveMessage.content" placeholder="说说~" maxlength="80" adapt-textarea-minheight="1.40625" row="4"></textarea>
                     </div>
                     <div class="declare">
                         <a ng-click="openEntrust()">我已授权委托洋码头申报海关购买海外商品</a>
