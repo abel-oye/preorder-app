@@ -338,7 +338,10 @@ body{
         }
         //不可点击状态
         &.disabled{
-            color:#cecece;
+            color:#9b9b9b;
+            .label{
+                color:#9b9b9b;
+            }
             small,
             .icon-checkBox{
                 color:#cecece;
@@ -471,16 +474,25 @@ body{
 }
 
 //我的优惠券
+.discount-list-wrapper{
+    height: $rem*640;
+    overflow-y: auto;
+    .title-wrapper{
+        height: $rem*90;
+    }
+    .title{
+        position:absolute;
+        width: 100%;
+        z-index:2;
+    }
+}
 .my-discount{
     margin-top:$rem*20;
-   /*  &-list{
-        height: 90%;
-        overflow-y: auto;
-    } */
     &-item{
         text-align:left;
         padding:$rem*34 $rem*20;
         border-bottom:1px solid #dedede;
+        position:relative;
         &:last-child{
             border-bottom:0;
         }
@@ -491,6 +503,19 @@ body{
         p{
             font-size:$rem*24;
             color:#969696;
+        }
+        &.selected{
+            &:after{
+                content: '';
+                position:absolute;
+                width: $rem*22;
+                height: $rem*14;
+                border-left:2px solid #CC3333;
+                border-bottom:2px solid #CC3333;
+                top:50%;
+                right:$rem*25;
+                transform: rotate(-55deg);
+            }
         }
         &.disabled{
             h3,p{
@@ -805,6 +830,7 @@ body{
 }
 
 .dialog-area{
+    padding:0;
     width:100%;
     border-radius:0;
     bottom:0;
@@ -827,14 +853,15 @@ body{
     }
 }
 
-//弹出选择规格
-.dialog-select-wrapper{   
-    padding:$rem*0 $rem*20; 
-
+.dialog-select-wrapper{
+    min-height:$rem*500;
+    overflow: hidden;
 }
+
 
 .entrust-wrapper{  
     padding:0;
+    
     .dialog-content{
         position:relative;
         color:#646464;

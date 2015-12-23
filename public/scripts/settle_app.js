@@ -367,6 +367,7 @@
                             if($scope.couponsList[0]){
                                 currProdcut = order;
                                 $scope.selectCoupon($scope.couponsList[0]);
+                                $scope.switchCoupon(order);
                             }else{
                                 order.useDiscount = '没有可使用的优惠券';
                             }
@@ -379,6 +380,11 @@
                 };
             //打开使用优惠券
             $scope.openUserCoupon = function (order) {
+
+                //当已经选中优惠码 优惠券不能点击
+                if($scope.couponType === 2){
+                    return;
+                }
 
                 //判断当前订单是否已经加载过优惠券列表了
                 if(!order.isLoadCoupon){
@@ -402,10 +408,12 @@
 
             //切换优惠券选择状态
             $scope.switchCoupon = function(order){
+               
                 var promotionUsed = order.PromotionUsed;
 
                 if(promotionUsed.UseCouponCode && !promotionUsed.inputCouponCode){
                     order.PromotionUsed = {};
+                    $scope.couponType = 0;
                     acountDiscount();
                 }else{
                     //判断是否被选择过优惠券
@@ -419,12 +427,16 @@
 
             //切换优惠券输入状态
             $scope.switchInputCoupon = function(order){
+               
                 var promotionUsed = order.PromotionUsed;
 
                 if(promotionUsed.UseCouponCode && promotionUsed.inputCouponCode){
                     order.PromotionUsed = {};
+                    $scope.couponType = 0;
                     acountDiscount();
                 }else{
+                    $scope.couponType = 2;
+                    order.PromotionUsed = {};
                     couponInfo && confirmCoupon()
                 }
             }
@@ -432,7 +444,8 @@
             /**
              * 选择可使用的优惠券
              */
-            $scope.selectCoupon = function (coupon) {
+            $scope.selectCoupon = function (coupon,index) {
+                index = index || 0;
                 //作为切换选中和取消选中的优惠券计算；
                 currProdcut.selectCoupon = coupon;
 
@@ -448,6 +461,10 @@
                 acountDiscount();
 
                 $scope.closeMask();
+
+                $scope.couponType = 1;
+
+                $scope.selectCouponIndex = index;
             };
 
             var currCoupon = {
@@ -473,6 +490,8 @@
                 //currProdcut.useDiscount = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
 
                 acountDiscount();
+
+                $scope.couponType = 2;
             };
 
             //确认输入优惠券
@@ -641,6 +660,8 @@
 
                     //product.useDiscount = '￥' + product.usedGift + '红包';
                 }
+
+                $scope.couponType = 0;
 
                 acountDiscount();
             };
@@ -1088,6 +1109,23 @@
                 link: function (scope, ele) {
                     ele[0].addEventListener('touchmove', function (event) {
                         event.preventDefault();
+                    }, false);
+                }
+            };
+        }
+    ]);
+
+    /**
+     * 禁止事件冒泡
+     */
+    app.directive('stopPropagation', [
+        function () {
+            return {
+                restrict: 'A',
+                link: function (scope, ele,attr) {
+                    document.addEventListener('scroll', function (event) {
+                        event.stopPropagation();
+                        return false;
                     }, false);
                 }
             };
