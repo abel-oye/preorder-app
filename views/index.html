@@ -56,7 +56,7 @@
                         </div>
                         <div class="info">
                             <h4>{{p.ProductName}}</h4>
-                            <p ng-if="p.CatalogPropertyList && p.CatalogPropertyList[0]">商品规格: <span class="prop" ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.PropertyAttribute}}</span></p>
+                            <p ng-if1="p.CatalogPropertyList && p.CatalogPropertyList[0]">商品规格: <span class="prop" ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.PropertyAttribute}}</span></p>
                             <p> 
                                 <span class="freight-discount" ng-if="logisticsConversion(p)">{{logisticsConversion(p)}}</span>
                                 <span class="pro-flag local-return" ng-if="1"><i class="icon-local-return"></i>本土退货</span>
