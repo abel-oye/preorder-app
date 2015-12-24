@@ -128,9 +128,11 @@
 
     app.filter('phoneSecrecy',function(){
         return function(num){
-            return (num + '').replace(/\d{3}(?:(\d{4}))\d{4}/,function(o,r){
+            return num.substr(0,3)+'***'+num.substr(7);
+            /*return (num + '').replace(/\d{3}(?:(\d{4}))\d{4}/,function(o,r){
+                console.log(r)
                 return o.replace(r,'***');
-            });
+            });*/
         }
     });
 
@@ -180,12 +182,12 @@
 
             /**
              * 小计价格
-             * @param orderf
+             * @param order
              */
             $scope.totalPrice = function(order){
                 var i=0,len=order.Products.length,price=0;
                 for(;i<len;i++){
-                    price += order.Products[i].QuotePrice;
+                    price += order.Products[i].QuotePrice * order.Products[i].ProductNumber;
                 }
                 return price;
             }
@@ -214,6 +216,21 @@
                     num += orders[i].ProductNumber;
                 }
                 return num;
+            }
+
+            $scope.logisticsConversion = function (data) {
+                //物流优惠
+                var logisticsBenefits = '';
+                if (data.FreeShipping) {
+                    logisticsBenefits += '包邮';
+                }
+                if (data.TaxFarming) {
+                    logisticsBenefits += '包税';
+                }
+                console.log(logisticsBenefits)
+                //物流优惠
+                return logisticsBenefits;
+
             }
 
             /**
@@ -543,7 +560,7 @@
                         var data = ret.Data;
                         if (data.Status + '' === '0') {
                             $scope.couponType = 0;
-                            return toast(ret.Msg || '您输入的优惠码不正确或不能使用');
+                            return toast(ret.Msg || '哈尼，输入的优惠码有错唉~');
                         }
                         couponInfo = data.Coupon;
                         if (data.Status + '' === '1') {
@@ -561,89 +578,8 @@
 
                 });
             };
-            //验证手机号码
-            var validatePhoneNumber = function () {
-                var phone = $scope.phoneNumber;
-                //验证是否为空
-                if (phone === '') {
-                    toast('手机号码不能为空,请重新输入');
-                    return false;
-                }
-                if (!/^1[3|4|5|8][0-9]\d{8}$/.test(phone)) {
-                    toast('手机号码有误，请重新输入');
-                    return false;
-                }
-                return true;
-            };
-
-            //获得验证码
-            $scope.resend = function () {
-                if ($scope.btnStatus) {
-                    return;
-                }
-
-                if (!validatePhoneNumber()) {
-                    return;
-                }
-
-                $scope.coupon.btnStatus = true;
-
-                var countDown = function (time) {
-                    $scope.coupon.btnTxt = time + 's后重发';
-                    if (time--) {
-                        $timeout(function () {
-                            countDown(time);
-                        }, 1000);
-                    }
-                    else {
-                        $scope.coupon.btnStatus = false;
-                        $scope.coupon.btnTxt = '重新发送';
-                    }
-                };
-
-                data4jsonp(jsApiHost + '/api/User/SendBindMobileValidateCode', {
-                    Phone: $scope.phoneNumber
-                }).success(function (result) {
-                    if (result.Code != 200) {
-                        $scope.coupon.btnStatus = false;
-                        $scope.coupon.btnTxt = '重新发送';
-                        return toast(result.Msg || '发送失败');
-                    }
-                    else {
-                        toast('验证码已发送，请查收短信');
-                        countDown(60);
-                    }
-                });
-
-
-            };
-            //完成验证
-            $scope.completeValidate = function () {
-                var validateCode = $scope.coupon.validCode;
-                if (!validateCode || $scope.isComplete) {
-                    return;
-                }
-                if (!validatePhoneNumber()) {
-                    return;
-                }
-                $scope.isComplete = true;
-
-                data4jsonp(jsApiHost + '/api/User/VerifyBindMobileValidateCode', {
-                    Phone: $scope.phoneNumber,
-                    Code: validateCode
-                }).success(function (result) {
-                    $scope.isComplete = false;
-                    if (result.Code == 200) {
-                        toast('已完成手机号码验证');
-                        confirmCoupon();
-                        $scope.closeMask();
-                    }
-                    else {
-                        toast(result.Msg || '无法绑定此号码，请稍后再试');
-                        $scope.isComplete = false;
-                    }
-                });
-            };
+          
+           
 
             $scope.closeMask = function () {
                 $scope.maskOpen = false;
@@ -660,7 +596,8 @@
 
                 if(product.PromotionUsed.UseGiftAmount){
                     product.PromotionUsed.UseGiftAmount = 0;
-                    product.useDiscount = '';
+                    //product.useDiscount = '';
+                    $scope.couponType = 0;
                 }else{
                     if (product.isUseGift || product.usedGift === 0) {
                         return;
@@ -672,7 +609,7 @@
                     product.useCouponDesc = '￥' + product.usedGift + '红包';
                 }
 
-                $scope.couponType = 0;
+               
 
                 acountDiscount();
             };
@@ -872,6 +809,9 @@
                         }
                         else {
                             toast('保存身份证信息失败');
+                            //只要失败
+                            $scope.canSubmint = true;
+                            $scope.isPay = false;
                         }
                     }
                     else {
@@ -915,7 +855,7 @@
                         channel:(ua.match(/Channel\=(?:([^\s]*))/i) || [])[1] || 'wap',//获得app下载渠道
                         LeaveMessage:$scope.leaveMessage.content//留言
                     }).success(function (res) {
-                        if (res.Code == 200 && false) {
+                        if (res.Code == 200) {
                             var result = res.Data;
 
                             if (!(result.TradingIds && result.TradingIds[0])) {

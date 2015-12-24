@@ -52,14 +52,13 @@
                     <!--遍历商品-->
                     <li ng-repeat="p in i.Products">
                         <div class="pic">
-                            <div class="pic-carrier" ng-style="{'background-image':'url('+p.PictureUrl+')'}">
-
-                            </div>
+                            <div class="pic-carrier" ng-style="{'background-image':'url('+p.PictureUrl+')'}"></div>
                         </div>
                         <div class="info">
                             <h4>{{p.ProductName}}</h4>
-                            <p ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.Property}} : <b>{{catalogProp.PropertyAttribute}}</b></p>
-                            <p>
+                            <p>商品规格: <span class="prop" ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.PropertyAttribute}}</span></p>
+                            <p> 
+                                <span class="freight-discount">{{logisticsConversion(p)}}</span>
                                 <span class="pro-flag local-return" ng-if="1"><i class="icon-local-return"></i>本土退货</span>
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==5"><i class="icon-beihai-bonded"></i>贝海保税</span>
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==3"> <i class="icon-beihai-directMail"></i>贝海直邮</span>
@@ -76,13 +75,13 @@
                 </ul>
                 <div class="settle-count">
                     <div><b>共 {{i.ProductNumber}} 件商品</b> 合计：<span class="price price-num">&yen;<strong>{{totalPrice(i).toFixed(2)}}</strong></span></div>
-                    <div class="freight-total">(含运费：<span class="price-num">&yen;<strong>{{totalFreight(i).toFixed(2)}}</strong></span>)</div>
+                    <div class="freight-total">( 含运费：<span class="price-num">&yen;<strong>{{totalFreight(i).toFixed(2)}}</strong></span> )</div>
                 </div>
                 <div class="buyer-ft">
                     <!--优惠-->
                     <div class="discount-wrapper ng-cloak" ng-if="i.Promotion.CanUseCoupon||i.Promotion.CanUseGift||i.Promotion.CanUseFreeCard">
                         <div class="discount-hd">
-                             我使用的优惠
+                             选择优惠方式
                         </div>
                         <ol class="discount-list swiper-container" ng-init="canUseGift(i)">
                             <!--stauts change : disabled -->
@@ -114,8 +113,8 @@
                     </div>
                     <!--留言-->
                     <div class="leaveMessage">
-                        <label for="">留言:</label>
                         <textarea ng-model="leaveMessage.content" placeholder="说说~" maxlength="80" adapt-textarea-minheight="1.40625" row="4"></textarea>
+                        <label for="">留言:</label>
                     </div>
                     <div class="declare">
                         <a ng-click="openEntrust()">我已授权委托洋码头申报海关购买海外商品</a>
