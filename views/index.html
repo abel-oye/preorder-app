@@ -56,9 +56,9 @@
                         </div>
                         <div class="info">
                             <h4>{{p.ProductName}}</h4>
-                            <p>商品规格: <span class="prop" ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.PropertyAttribute}}</span></p>
+                            <p ng-if="p.CatalogPropertyList && p.CatalogPropertyList[0]">商品规格: <span class="prop" ng-repeat="catalogProp in p.CatalogPropertyList">{{catalogProp.PropertyAttribute}}</span></p>
                             <p> 
-                                <span class="freight-discount">{{logisticsConversion(p)}}</span>
+                                <span class="freight-discount" ng-if="logisticsConversion(p)">{{logisticsConversion(p)}}</span>
                                 <span class="pro-flag local-return" ng-if="1"><i class="icon-local-return"></i>本土退货</span>
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==5"><i class="icon-beihai-bonded"></i>贝海保税</span>
                                 <span class="pro-flag xloboBoned" ng-if="p.CatalogStatus==3"> <i class="icon-beihai-directMail"></i>贝海直邮</span>
@@ -89,7 +89,7 @@
                             ng-click="useGift(i)" ng-init="i.PromotionUsed.UseGiftAmount = 0">
                                 <label class="fl"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':couponType === 3}"></i></label>
                                 <span class="label">
-                                    红包 金额 &yen;{{i.usedGift}}
+                                    红包 余额 &yen;{{orderInfo.AvailableGiftAmount}}
                                 </span>
                                 <div class="sub-label">
                                     最多抵扣本次支付金额的50%
@@ -290,7 +290,7 @@
     <script src="/scripts/vendor/angular.min.js"></script>
     <!-- endbuild -->
     <!-- build:js /scripts/settle-app_min.js -->
-    <script src="/scripts/settle_app.js"></script>
+    <script src="/scripts/settle_app.js?v=2"></script>
     <!-- endbuild -->
     <script>
 

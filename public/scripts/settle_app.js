@@ -619,7 +619,7 @@
              * 计算能使用的红包数
              */
             $scope.canUseGift = function (product) {
-                product.usedGift = parseInt(product.Promotion.MaxUseGiftAmount > $scope.orderInfo.AvailableGiftAmount ? $scope.orderInfo.AvailableGiftAmount : product.Promotion.MaxUseGiftAmount) || 0;
+                product.usedGift = parseInt(Math.min(product.Promotion.MaxUseGiftAmount,$scope.orderInfo.AvailableGiftAmount)) || 0;
             };
 
             $scope.openAddress = function () {
@@ -1092,7 +1092,7 @@
             return {
                 restrict: 'A',
                 link: function (scope, ele, attr) {
-                    ele[0].addEventListener('change', function (event) {
+                    ele[0].addEventListener('blur', function (event) {
                         var row = this.value.split("\n").length-1;
                         this.style.minHeight = attr.adaptTextareaMinheight*row+'rem';
                     }, false);
