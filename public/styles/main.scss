@@ -50,12 +50,12 @@ body{
         height:$rem*8;
         background-image: url(data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAAeAAD/4QMraHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA1LjMtYzAxMSA2Ni4xNDU2NjEsIDIwMTIvMDIvMDYtMTQ6NTY6MjcgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bXA6Q3JlYXRvclRvb2w9IkFkb2JlIFBob3Rvc2hvcCBDUzYgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjg1RENCQTcwQTdCNjExRTU4MDA3OTFDRUVCMEMyNDYzIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjg1RENCQTcxQTdCNjExRTU4MDA3OTFDRUVCMEMyNDYzIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6ODVEQ0JBNkVBN0I2MTFFNTgwMDc5MUNFRUIwQzI0NjMiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6ODVEQ0JBNkZBN0I2MTFFNTgwMDc5MUNFRUIwQzI0NjMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7/7gAOQWRvYmUAZMAAAAAB/9sAhAAQCwsLDAsQDAwQFw8NDxcbFBAQFBsfFxcXFxcfHhcaGhoaFx4eIyUnJSMeLy8zMy8vQEBAQEBAQEBAQEBAQEBAAREPDxETERUSEhUUERQRFBoUFhYUGiYaGhwaGiYwIx4eHh4jMCsuJycnLis1NTAwNTVAQD9AQEBAQEBAQEBAQED/wAARCAAIAIgDASIAAhEBAxEB/8QAbgABAQADAQAAAAAAAAAAAAAAAAQBAgMGAQADAQEBAAAAAAAAAAAAAAAAAQQDAgUQAAIBAgQHAAAAAAAAAAAAAAABAhEDITESBFFhgaEyQmIRAAICAgIDAQAAAAAAAAAAAAARARIxAyFBcYECIv/aAAwDAQACEQMRAD8A9SACwgCTbosWyy1aVtfTzYBltsuMdm2ir5z0dCLdbmtbcHh7PjyAMC7RS/69eSUAAXgAAAO+227uvVLwXcADjZak0yXpJKiyRrcmoRq+iAHCcPB5v01KyRyk5y1PMwAVQlwRS3LyAAMR/9k=);
         background-size:$rem*136 $rem*8;
+        background-repeat-y: no-repeat;
     }
    
     h3{
         font-size:$rem*30;
-        color:#414141;
-        font-weight: bold;
+        color:#383838;
     }
     .icon-arrow-right{
         font-size:$rem*34;
@@ -81,15 +81,19 @@ body{
     margin-bottom:$rem*18;
 }
 .customs-title{
-   font-size:$rem*24;
-   color:#686868;
    &-wrapper{
-    height:$rem*72;
-    line-height:$rem*72;
+        height:$rem*72;
+        line-height:$rem*72;
+        &>div{
+            font-size:$rem*24;
+            color:#686868;
+        }
+        .icon-customs{
+            font-size:$rem*24;
+            vertical-align: $rem*2;
+        }
    }
-   .icon-customs{
-       font-size:$rem*22;
-   }
+   
    &.fixed{
         position:fixed;
         left:0;
@@ -105,7 +109,7 @@ body{
 .customs-input{
     input{
         padding:$rem*28 0;
-        width:100%;
+        width:$rem*400;
         color:#686868;
         //border:1px solid #9b9b9b;
         font-size:$rem*28;
@@ -118,12 +122,11 @@ body{
         margin-top:$rem*5;
     }
     &.error{
-        input{
-            border-color:#cc3333;
-            color:#cc3333;
-        }
         .msg-text{
-            display:block;
+            font-size: $rem*20;
+            display:inline;
+            float: right;
+            margin-top: $rem*28;
         }
     }
 }
@@ -142,51 +145,49 @@ body{
     height: $rem*80;
     line-height: $rem*80;
     strong{
-        font-size:$rem*30;
-        color:#383838;
-        font-weight:bold;
+        font-size:$rem*24;
+        color:#646464;
+
     }
 
 }
 
 .pro-list{
     background:#fff;
-    
     &>li{
         overflow:hidden;
         background:#f8f8f8;
         margin-bottom: $rem*18;
         padding:$rem*20 $rem*24;
-        &:first-child{
-            border-top:0;
+        &:last-child{
             margin-bottom: 0;
         }
     }
     .pic{
-        border:1px solid #ebebeb;
         width:$rem*152;
         height:$rem*152;
         float:left;
-        border-radius:$rem*8;
         .pic-carrier{
             background-size:contain;
             background-repeat:no-repeat;
             background-position:center;
-            border-radius:$rem*8;
             width:100%;
             height:100%;
+            background-color: #fff;
         }
     }
 
     .info{
-        padding-left:$rem*160;
-       position:relative;
-         padding-right:$rem*120;
+        padding-left:$rem*172;
+        position:relative;
+        padding-right:$rem*140;
         h4{
              font-size:$rem*24;
              height:$rem*68;
              color:#383838;
+             line-height: $rem*34;
              margin-bottom:$rem*9;
+             padding-left:$rem*1;
              @include textOverFlow(2);
         }
         &>.prop{
@@ -196,10 +197,11 @@ body{
             color:#9B9B9B;
             font-size:$rem*20;
             .pro-flag{
-                padding-right:$rem*5;
-                font-size:$rem*10;
+                padding-right:$rem*20;
+                font-size:$rem*20;
                 i{
-                    font-size:$rem*26;
+                    font-size:$rem*24;
+                    margin-right:$rem*5;
                 }
                 &.xloboBoned{
                     color:#482517;
@@ -244,11 +246,10 @@ body{
     margin-bottom:$rem*18;
     background: #fff;
     text-align: right;
-    color:#9b9b9b;
-    padding:$rem*24 $rem*20;
+    color:#646464;
+    padding:$rem*25 $rem*20 $rem*20;
     font-size:$rem*24;
     .price-num{
-        font-size:$rem*18;
         strong{
             font-size:$rem*24;
         }
@@ -258,17 +259,18 @@ body{
     }
     b{
         color:#646464;
-        font-weight: bold;
+        margin-right: $rem*20;
     }
     .freight-total{
-        font-size:$rem*20;
+        font-size:$rem*18;
+        line-height: 1.4;
     }
 }
 //优惠券使用
 .discount-wrapper{
    background:#fff;
    border-top:1px solid #ebebeb;
-   padding:0 $rem*24;
+   
 
 }
 .discount-hd{
@@ -277,6 +279,7 @@ body{
     font-size:$rem*20;
     background:#f8f8f8;
     color:#9b9b9b;
+    padding:0 $rem*20;
     &>span{
         color:#9b9b9b;
         font-size:$rem*24;
@@ -289,6 +292,7 @@ body{
 }
 //优惠列表
 .discount-list{
+    padding:0 $rem*20;
     margin-bottom:$rem*18;
     &>li{
         height:$rem*132;
@@ -297,14 +301,19 @@ body{
         color:#383838;
         border-bottom:1px solid #ebebeb;
         position:relative;
+        &>label{
+            vertical-align: middle;
+        }
         //红包
         &.gift-wrapper{
             padding-top:$rem*32;
             line-height: 1.5;
             position:relative;
             .sub-label{
-                font-size:$rem*22;
+                font-size:$rem*24;
                 color:#9b9b9b;
+                margin-top: $rem*4;
+                line-height: 1;
             }
             .discount-desc{
                 position: absolute;
@@ -316,17 +325,18 @@ body{
         }
         .coupon-code{
             padding:$rem*16 $rem*24;
-            color:#646464;
-            background:#f1f1f1;
-            font-size:$rem*24;
+            color:#9b9b9b;
+            //background:#f1f1f1;
+            font-size:$rem*28;
             border-radius:$rem*5;
-            margin-left:$rem*15;
             width:$rem*200;
+            &:disabled{
+                background:#fff;
+            }
         }
         .label{
             color:#383838;
             font-size:$rem*28;
-            font-weight: bold;
         }
         &:last-child{
             border-bottom:0;
@@ -342,9 +352,9 @@ body{
         .icon-checkBox
         {
             font-size:$rem*40;
-            color:#686868;
+            color:#9b9b9b;
             margin-right:$rem*20;
-            vertical-align: middle;
+            //vertical-align: middle;
             &-selected{
                 color:#c4392f
             }
@@ -377,6 +387,7 @@ body{
 //结算工具条
 .settle-tools{
     position:fixed;
+    z-index: 4;
     bottom:0;
     left:0;
     width:100%;
@@ -422,7 +433,7 @@ body{
         left: 0;
         display: none;
 
-        background: rgba(0,0,0,.7);
+        background: rgba(56,56,56,.5);
         &.open
         {
             display: block;
@@ -818,10 +829,11 @@ body{
         height: $rem*90;
         border:0;      
         width:100%;
-        padding-top: $rem*24;
+        padding-top: $rem*29;
         background:#fff;
         padding-left:$rem*90;
         transition: height 0.25s ease-in-out;
+        color:#646464;
         &:focus{
             height: $rem*250;
         }
@@ -925,6 +937,8 @@ body{
     color:#fff;
     background:#338ADB;
     font-size:$rem*14;
+    vertical-align: middle;
+    margin-right: $rem*8;
 }
 
 //包邮包税
@@ -932,7 +946,23 @@ body{
     border-radius:$rem*6;
     border:1px solid #cc3333;
     color:#cc3333;
-    font-size:$rem*20;
-    padding:$rem*6 $rem*10;
+    font-size:$rem*18;
+    line-height: 0;
+    padding:$rem*2 $rem*6;
     margin-right: $rem*5;
+}
+
+///
+.select-group{
+    position:relative;
+    height: $rem*60;
+    select{
+        position:absolute;
+        z-index: 2;
+        width: 100%;
+        left:0;
+        top:0;
+        opacity: 0;
+        height: $rem*60;
+    }
 }

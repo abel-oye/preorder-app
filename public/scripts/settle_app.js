@@ -1,125 +1,7 @@
 /* global angular: true,YmtApi:true,_dc_:true */
 
-(function () {
+;(function () {
     'use strict';
-
-    /**
-     * ymtUI
-     *
-     * toast
-     */
-    angular.module('ymt.UI', []).factory('ymtUI', [function () {
-        var toastStatus = true;
-        /**
-         * [toast description]
-         * @param  {object} opts 配置
-         *          {string} msg 文本信息
-         *          {number} duration 时间
-         */
-        var toast = function (opts) {
-            if (toastStatus) {
-                toastStatus = false;
-                var errElm = $('.ymtui-toast');
-                if (!errElm[0]) {
-                    errElm = $('<div class="ymtui-toast"></div>')
-                        .appendTo('body');
-                }
-                errElm.html(opts.msg).addClass('show');
-
-                setTimeout(function () {
-                    errElm.removeClass('show');
-                    toastStatus = true;
-                    opts.callback && opts.callback();
-                }, opts.duration || 2400);
-            }
-        };
-
-        var alert = function (opts) {
-            if (comfirmState) {
-                comfirmState = false;
-                var comfirmElm = $('.ymtui-comfirm');
-                if (!comfirmElm[0]) {
-                    var html = [
-                        '<div class="ymtui-dialog ymtui-comfirm rubberBand animated">',
-                        '<div class="ymtui-commirm-hd"></div>',
-                        '<div class="ymtui-commirm-bd">',
-                        '</div>',
-                        '<div class="ymtui-commirm-ft">',
-                        '   <button type="button" class="btn btn-primary btn-full commirm">确定</button>',
-                        '</div>',
-                        '</div>',
-                    ];
-                    comfirmElm = $(html.join('')).appendTo('body');
-                }
-
-                var closeDialog = function () {
-                    $('.ymtui-comfirm').removeClass('open');
-                    $('.ymtui-dialog-mask').removeClass('open');
-                    comfirmState = true;
-                };
-                comfirmElm.find('.ymtui-commirm-bd').text(opts.msg);
-
-                comfirmElm.find('.ymtui-commirm-ft .commirm').one('click', function () {
-                    closeDialog();
-                    opts.callback && opts.callback();
-                });
-
-                comfirmElm.addClass('open');
-                $('.ymtui-dialog-mask').addClass('open');
-            }
-        };
-
-        var comfirmState = true;
-        /**
-         * 确认框
-         * @param  {object} opts [description]
-         * @param  {function} cb 点击成功操作之后的回调
-         */
-        //@TODO 这里要转成指令操作
-        var comfirm = function (opts, callbak) {
-            if (comfirmState) {
-                comfirmState = false;
-                var comfirmElm = $('.ymtui-comfirm');
-                if (!comfirmElm[0]) {
-                    var html = [
-                        '<div class="ymtui-dialog ymtui-comfirm rubberBand animated">',
-                        '<div class="ymtui-commirm-hd"></div>',
-                        '<div class="ymtui-commirm-bd">',
-                        '</div>',
-                        '<div class="ymtui-commirm-ft btn-group">',
-                        '   <div class="btn-group-col_2"><button type="button" class="btn close btn-full  btn-border-primary btn-white">取消</button></div>',
-                        '   <div class="btn-group-col_2"><button type="button" class="btn btn-primary btn-full commirm">确定</button></div>',
-                        '</div>',
-                        '</div>',
-                    ];
-                    comfirmElm = $(html.join('')).appendTo('body');
-                }
-
-                var closeDialog = function () {
-                    $('.ymtui-comfirm').removeClass('open');
-                    $('.ymtui-dialog-mask').removeClass('open');
-                    comfirmState = true;
-                };
-                comfirmElm.find('.ymtui-commirm-bd').text(opts.msg);
-
-                comfirmElm.find('.ymtui-commirm-ft .close').on('click', closeDialog);
-                comfirmElm.find('.ymtui-commirm-ft .commirm').one('click', function () {
-                    closeDialog();
-                    callbak && callbak();
-                });
-
-                comfirmElm.addClass('open');
-                $('.ymtui-dialog-mask').addClass('open');
-            }
-        };
-
-        return {
-            toast: toast,
-            comfirm: comfirm,
-            alert: alert
-        };
-    }]);
-
     /**
      * [preOrder ]
      * @type {[type]}
@@ -203,6 +85,7 @@
                 }
                 return freight;
             }
+
             /**
              * 统计商品数量
              * @param order {object} 订单对象 如果不传递则获取所有订单商品
@@ -221,13 +104,12 @@
             $scope.logisticsConversion = function (data) {
                 //物流优惠
                 var logisticsBenefits = '';
-                if (data.FreeShipping) {
+                if (data.Freight) {
                     logisticsBenefits += '包邮';
                 }
-                if (data.TaxFarming) {
+                if (data.IsTariffType) {
                     logisticsBenefits += '包税';
                 }
-                console.log(logisticsBenefits)
                 //物流优惠
                 return logisticsBenefits;
 
@@ -384,7 +266,9 @@
                             if($scope.couponsList[0]){
                                 currProdcut = order;
                                 $scope.selectCoupon($scope.couponsList[0]);
+                                $scope.coupon.selectCouponIndex = $scope.couponsList[0].CouponCode;
                                 $scope.switchCoupon(order);
+
                             }else{
                                 order.useDiscount = '没有可使用的优惠券';
                             }
@@ -468,14 +352,17 @@
              * 选择可使用的优惠券
              */
             $scope.selectCoupon = function (coupon,index) {
-                index = index || 0;
+
+                index = index || $scope.coupon.selectCouponIndex || 0;
+                coupon = coupon || $scope.couponsList[index];
                 //作为切换选中和取消选中的优惠券计算；
                 currProdcut.selectCoupon = coupon;
 
                 currProdcut.PromotionUsed = {};
                 currProdcut.PromotionUsed.UseCouponCode =  coupon.CouponCode;
 
-                currProdcut.useCouponDesc = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
+                //currProdcut.useCouponDesc = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
+                currProdcut.useCouponDesc =  (coupon.UseType == 1 ? '抵' : '返') + '￥' +coupon.CouponValue;
                 currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
 
                 if (coupon.UseType == 1) {
@@ -491,6 +378,10 @@
                 $scope.selectCouponIndex = index;
             };
 
+           /* $scope.$watch('selectCouponIndex',function(c,n){
+                console.log(c,n)
+            })
+*/
             var currCoupon = {
 
                 },
@@ -511,7 +402,8 @@
 
                 currProdcut.PromotionUsed.UseCouponAmount = parseInt(couponInfo.Type == 1 ? couponInfo.Value : 0, 10);
 
-                currProdcut.useCouponDesc = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
+                //currProdcut.useCouponDesc = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
+                currProdcut.useCouponDesc = '满'+couponInfo.CouponOrderValue+(couponInfo.Type == 1 ?'抵':'返')+ couponInfo.Value + '元红包';
 
                 acountDiscount();
 
@@ -606,7 +498,7 @@
                     product.PromotionUsed.UseGiftAmount = product.usedGift;
 
                     $scope.couponType = 3;
-                    product.useCouponDesc = '￥' + product.usedGift + '红包';
+                    product.useCouponDesc = '抵扣￥' + product.usedGift;
                 }
 
                
@@ -1069,19 +961,81 @@
     /**
      * 禁止事件冒泡
      */
-    app.directive('stopPropagation', [
+   /* app.directive('stopPropagation', [
         function () {
             return {
                 restrict: 'A',
                 link: function (scope, ele,attr) {
-                    document.addEventListener('scroll', function (event) {
-                        event.stopPropagation();
-                        return false;
-                    }, false);
+                    console.log(2)
+                    var startY = 0;
+
+                        // Store enabled status
+                        var enabled = false;
+
+                        var handleTouchmove = function(evt) {
+                            console.log(handleTouchmove)
+                            // Get the element that was scrolled upon
+                            var el = evt.target;
+
+                            // Check all parent elements for scrollability
+                            while (el !== document.body) {
+                                // Get some style properties
+                                var style = window.getComputedStyle(el);
+
+                                if (!style) {
+                                    // If we've encountered an element we can't compute the style for, get out
+                                    break;
+                                }
+
+                                var scrolling = style.getPropertyValue('-webkit-overflow-scrolling');
+                                var overflowY = style.getPropertyValue('overflow-y');
+                                var height = parseInt(style.getPropertyValue('height'), 10);
+
+                                // Determine if the element should scroll
+                                var isScrollable = scrolling === 'touch' && (overflowY === 'auto' || overflowY === 'scroll');
+                                var canScroll = el.scrollHeight > el.offsetHeight;
+
+                                if (isScrollable && canScroll) {
+                                    // Get the current Y position of the touch
+                                    var curY = evt.touches ? evt.touches[0].screenY : evt.screenY;
+
+                                    // Determine if the user is trying to scroll past the top or bottom
+                                    // In this case, the window will bounce, so we have to prevent scrolling completely
+                                    var isAtTop = (startY <= curY && el.scrollTop === 0);
+                                    var isAtBottom = (startY >= curY && el.scrollHeight - el.scrollTop === height);
+
+                                    // Stop a bounce bug when at the bottom or top of the scrollable element
+                                    if (isAtTop || isAtBottom) {
+                                        evt.preventDefault();
+                                    }
+
+                                    // No need to continue up the DOM, we've done our job
+                                    return;
+                                }
+
+                                // Test the next parent
+                                el = el.parentNode;
+                            }
+
+                            // Stop the bouncing -- no parents are scrollable
+                            evt.preventDefault();
+                        };
+
+                        var handleTouchstart = function(evt) {
+                            // Store the first Y position of the touch
+                            startY = evt.touches ? evt.touches[0].screenY : evt.screenY;
+                        };
+
+                        
+                        window.removeEventListener('touchstart', handleTouchstart, false);
+                        window.removeEventListener('touchmove', handleTouchmove, false);
+                        enabled = false;
+
+                        console.log('touchmove')
                 }
             };
         }
-    ]);
+    ]);*/
 
 
     /**
@@ -1093,8 +1047,8 @@
                 restrict: 'A',
                 link: function (scope, ele, attr) {
                     ele[0].addEventListener('blur', function (event) {
-                        var row = this.value.split("\n").length-1;
-                        this.style.minHeight = attr.adaptTextareaMinheight*row+'rem';
+                        var row = this.value.split("\n").length;
+                        this.style.minHeight = attr.adaptTextareaMinheight*row-1+'rem';
                     }, false);
                 }
             };
