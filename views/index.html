@@ -98,7 +98,10 @@
                                 <!--stauts change : selected-->
                                 <label ng-click="switchCoupon(i)"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':couponType === 1}"></i></label><span class="label">优惠券</span>
                                 <span class="select-group">
-                                    <select ng-model="coupon.selectCouponIndex" ng-change="selectCoupon(act,$index)" ng-options1="$index as ('满' +act.CouponOrderValue + (act.UseType == 1 ? '抵' : '返') + act.CouponValue)  for act in couponsList">
+                                    <select ng-model="coupon.selectCouponIndex" 
+                                            ng-change="selectCoupon(act,$index)" 
+                                            ng-options1="$index as ('满' +act.CouponOrderValue + (act.UseType == 1 ? '抵' : '返') + act.CouponValue)  for act in couponsList"
+                                            ng-disabled="couponType === 2">
                                        <option value="{{$index}}" ng-repeat="cl in couponsList">{{'满' + cl.CouponOrderValue + (cl.UseType == 1 ? '抵' : '返') + cl.CouponValue}}</option>
                                     </select> 
                                     <span class="coupon-select" ng-click1="openUserCoupon(i)">{{i.useDiscount||'请选择优惠券'}} <i class="icon-arrow-down"></i></span>
@@ -108,7 +111,15 @@
                             </li>
                             <li ng-if="i.Promotion.CanUseCoupon" >
                                 <label ng-click="switchInputCoupon(i)"><i class="icon-checkBox" ng-class="{'icon-checkBox-selected':couponType === 2}"></i></label><span class="label">优惠码: </span>
-                                <input class="coupon-code" type="text" name="" value="" placeholder="输入优惠码" ng-model="coupon.code" ng-blur="confirmInputCoupon(i)" ng-disabled="couponType === 1">
+                                <input class="coupon-code" 
+                                        type="text" 
+                                        name="" 
+                                        value="" 
+                                        placeholder="输入优惠码" 
+                                        ng-model="coupon.code" 
+                                        ng-blur="confirmInputCoupon(i)" 
+                                        ng-disabled="couponType === 1"
+                                        get-focus="couponType === 2">
                                 <span class="discount-desc" ng-if="couponType === 2">{{i.useCouponDesc}}</span>
                             </li>
                         </ol>

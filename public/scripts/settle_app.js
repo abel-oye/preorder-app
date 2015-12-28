@@ -104,7 +104,7 @@
             $scope.logisticsConversion = function (data) {
                 //物流优惠
                 var logisticsBenefits = '';
-                if (data.Freight) {
+                if (data.Freight == 0) {
                     logisticsBenefits += '包邮';
                 }
                 if (data.IsTariffType) {
@@ -362,8 +362,8 @@
                 currProdcut.PromotionUsed.UseCouponCode =  coupon.CouponCode;
 
                 //currProdcut.useCouponDesc = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
-                currProdcut.useCouponDesc =  (coupon.UseType == 1 ? '抵' : '返') + '￥' +coupon.CouponValue;
-                currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
+                currProdcut.useCouponDesc =  (coupon.UseType == 1 ? '抵扣' : '返红包') + '￥' +coupon.CouponValue;
+                currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '减' : '返') + coupon.CouponValue;
 
                 if (coupon.UseType == 1) {
                     currProdcut.PromotionUsed.UseCouponAmount = coupon.CouponValue;
@@ -403,7 +403,7 @@
                 currProdcut.PromotionUsed.UseCouponAmount = parseInt(couponInfo.Type == 1 ? couponInfo.Value : 0, 10);
 
                 //currProdcut.useCouponDesc = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
-                currProdcut.useCouponDesc = '满'+couponInfo.CouponOrderValue+(couponInfo.Type == 1 ?'抵':'返')+ couponInfo.Value + '元红包';
+                currProdcut.useCouponDesc = '满'+couponInfo.CouponOrderValue+(couponInfo.Type == 1 ?'减':'返红包')+ couponInfo.Value + '';
 
                 acountDiscount();
 
@@ -957,6 +957,24 @@
             };
         }
     ]);
+
+     //获得焦点
+    app.directive('getFocus', [
+        function () {
+            return {
+                restrict: 'A',
+                scope:{getFocus:'='},
+                link: function (scope, ele) {
+                    scope.$watch('getFocus',function(n,l){
+                        if(n){
+                            ele[0].focus();
+                        }
+                    });                   
+                }
+            };
+        }
+    ]);
+
 
     /**
      * 禁止事件冒泡
