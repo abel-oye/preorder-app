@@ -8,16 +8,6 @@
      */
     var app = angular.module('preOrderApp', ['ymt.UI']);
 
-    app.filter('phoneSecrecy',function(){
-        return function(num){
-            return num.substr(0,3)+'***'+num.substr(7);
-            /*return (num + '').replace(/\d{3}(?:(\d{4}))\d{4}/,function(o,r){
-                console.log(r)
-                return o.replace(r,'***');
-            });*/
-        }
-    });
-
     app.controller('preOrderApp.controller.index', [
         '$scope',
         '$http',

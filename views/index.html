@@ -21,7 +21,7 @@
     <section class="settle-container ng-cloak" ng-controller="preOrderApp.controller.index">
         <!--收件地址-->
         <address class="address-wrapp ng-cloak" ng-click="openAddress()" ng-if="orderInfo.Orders">
-            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId" >收件人: {{orderInfo.Orders[0].Address.Addressee}} <span class="fr">{{orderInfo.Orders[0].Address.Mobile | phoneSecrecy}}</span></h3>
+            <h3 ng-if="orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId" >收件人: {{orderInfo.Orders[0].Address.Addressee}} <span class="fr">{{orderInfo.Orders[0].Address.Mobile}}</span></h3>
             <div ng-if="orderInfo.Orders && orderInfo.Orders[0] && orderInfo.Orders[0].Address.AddressId" >
                 {{orderInfo.Orders[0].Address.Area}} {{orderInfo.Orders[0].Address.DetailAddress}}
             </div>
