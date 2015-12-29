@@ -403,7 +403,7 @@
                 currProdcut.PromotionUsed.UseCouponAmount = parseInt(couponInfo.Type == 1 ? couponInfo.Value : 0, 10);
 
                 //currProdcut.useCouponDesc = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
-                currProdcut.useCouponDesc = '满'+couponInfo.CouponOrderValue+(couponInfo.Type == 1 ?'减':'返红包')+ couponInfo.Value + '';
+                currProdcut.useCouponDesc = '满'+couponInfo.CouponOrderValue+(couponInfo.Type == 1 ?'减':'返')+ couponInfo.Value + '';
 
                 acountDiscount();
 
@@ -681,6 +681,8 @@
                 //是否需要上传身份证
                 if ($scope.isUploadIdCard && $scope.hasBonded) {
                     if (!$scope.validateIdcard()) {
+                        $scope.canSubmint = true;
+                        $scope.isPay = false;
                         return;
                     }
                 }
