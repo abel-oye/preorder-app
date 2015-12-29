@@ -962,8 +962,24 @@ body{
         z-index: 2;
         width: 100%;
         left:0;
-        top:0;
+        top:$rem*-15;
         opacity: 0;
         height: $rem*60;
+        background: #f1f1f1;
+            color: #646464;
+        font-size:$rem*24;
+         padding:$rem*16 $rem*24;
+    }
+}
+
+.ws-android{
+  .select-group{
+      select{
+        opacity:1;
+      }  
+    }
+    .coupon-select{
+        opacity: 0;
+
     }
 }

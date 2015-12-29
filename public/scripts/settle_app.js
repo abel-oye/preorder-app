@@ -256,7 +256,7 @@
                             if($scope.couponsList[0]){
                                 currProdcut = order;
                                 $scope.selectCoupon($scope.couponsList[0]);
-                                $scope.coupon.selectCouponIndex = $scope.couponsList[0].CouponCode;
+                                $scope.coupon.selectCouponIndex = 0;
                                 $scope.switchCoupon(order);
 
                             }else{
@@ -945,6 +945,43 @@
                     ele[0].addEventListener('touchmove', function (event) {
                         event.preventDefault();
                     }, false);
+                }
+            };
+        }
+    ]);  
+    /**
+     * 判断是什么系统增加相应class
+     * mac系统 ws-mac
+     * iphone手机 ws-iphone
+     * android环境 ws-android
+     * 微信 ws-wechat
+     * 扫货 ws-saohuo
+     *
+     * 这个指令应该加载顶级元素
+     */
+    app.directive('whatSystem', [
+        function () {
+            return {
+                restrict: 'A',
+                link: function (scope, ele) {
+                    var ua = window.navigator.useragent,
+                        clsName='';
+                    if(YmtApi.isIos){
+                        clsName += ' ws-mac';
+                        if(YmtApi.isIphone){
+                            clsName += ' ws-iphone';
+                        }
+                    }else if(YmtApi.isAndroid){
+                        clsName += ' ws-android';
+                    }                    
+                    
+                    if(YmtApi.isWechat){
+                        clsName += ' ws-wechat';
+                    }else if(YmtApi.isSaohuoApp){
+                        clsName += ' ws-saohuo';
+                    }
+                    console.log(ele[0])
+                    ele[0].className += ' '+clsName;
                 }
             };
         }
