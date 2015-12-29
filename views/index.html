@@ -118,6 +118,7 @@
                                         placeholder="输入优惠码" 
                                         ng-model="coupon.code" 
                                         ng-blur="confirmInputCoupon(i)" 
+                                        ng-input="confirmInputCoupon()"
                                         ng-disabled="couponType === 1 && couponType === 2"
                                         get-focus="couponType === 2">
                                 <span class="discount-desc" ng-if="couponType === 2">{{i.useCouponDesc}}</span>
@@ -126,7 +127,7 @@
                     </div>
                     <!--留言-->
                     <div class="leaveMessage">
-                        <textarea ng-model="leaveMessage.content" placeholder="说说~" maxlength="80" adapt-textarea-minheight="2.09" row="4"></textarea>
+                        <textarea ng-model="leaveMessage.content" placeholder="给卖家留言~" maxlength="80" adapt-textarea-minheight="2.09" row="4"></textarea>
                         <label for="">留言:</label>
                     </div>
                     <div class="declare">

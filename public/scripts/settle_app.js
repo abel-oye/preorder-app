@@ -649,6 +649,13 @@
                     return;
                 }
 
+                //@TODO 这里多订单需要优化
+                //避免用户输入完优惠码马上点击提交，这里做一次防提交处理
+                //选择了类型为输入，且输入了优惠码 但没有优惠码值 则视为在校验优惠码中
+                if($scope.couponType === 2 && $scope.coupon.code && !$scope.orderInfo.Orders[0].PromotionUsed.inputCouponCode){
+                    return;
+                }
+
                 //防止表单重复提交
                 if (!$scope.canSubmint) {
                     return toast('订单已生成，请勿重复提交');
