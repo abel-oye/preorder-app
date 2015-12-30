@@ -196,6 +196,9 @@ body{
         &>p{
             color:#9B9B9B;
             font-size:$rem*20;
+            .prop{
+                margin-right: $rem*5;
+            }
             .pro-flag{
                 padding-right:$rem*20;
                 font-size:$rem*20;
@@ -968,7 +971,8 @@ body{
         background: #f1f1f1;
             color: #646464;
         font-size:$rem*24;
-         padding:$rem*16 $rem*24;
+         padding:$rem*8 $rem*24;
+         line-height: 0;
     }
 }
 

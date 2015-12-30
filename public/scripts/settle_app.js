@@ -258,9 +258,9 @@
                                 $scope.selectCoupon($scope.couponsList[0]);
                                 $scope.coupon.selectCouponIndex = 0;
                                 $scope.switchCoupon(order);
-
                             }else{
                                 order.useDiscount = '没有可使用的优惠券';
+                                $scope.coupon.selectCouponIndex = 0;
                             }
                         }
                         else {
@@ -353,7 +353,7 @@
 
                 //currProdcut.useCouponDesc = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
                 currProdcut.useCouponDesc =  (coupon.UseType == 1 ? '抵扣' : '返红包') + '￥' +coupon.CouponValue;
-                currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '减' : '返') + coupon.CouponValue;
+                currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
 
                 if (coupon.UseType == 1) {
                     currProdcut.PromotionUsed.UseCouponAmount = coupon.CouponValue;
@@ -393,17 +393,18 @@
                 currProdcut.PromotionUsed.UseCouponAmount = parseInt(couponInfo.Type == 1 ? couponInfo.Value : 0, 10);
 
                 //currProdcut.useCouponDesc = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
-                currProdcut.useCouponDesc = '满'+couponInfo.CouponOrderValue+(couponInfo.Type == 1 ?'减':'返')+ couponInfo.Value + '';
+                currProdcut.useCouponDesc = '满'+couponInfo.CouponOrderValue+(couponInfo.Type == 1 ?'减':'返')+ parseInt(couponInfo.Value);
 
                 acountDiscount();
 
                 $scope.couponType = 2;
             };
 
+            var lastCode;
             //确认输入优惠券
             $scope.confirmInputCoupon = function (order) {
-                var code = $scope.coupon.code;
-                if (!code) {
+                var couponCode = $scope.coupon.code;
+                if (!couponCode || lastCode === couponCode) {
                     return;
                 }
 
@@ -434,18 +435,21 @@
                     params: JSON.stringify({
                         ProductsAmount: ProductsAmount,
                         SellerId: currProdcut.SellerId,
-                        CouponCode: code
+                        CouponCode: couponCode
                     }),
                     PlatformType: YmtApi.utils.getOrderSource()
                 }).success(function (ret, code) {
                     if (ret.Code == 200) {
                         var data = ret.Data;
                         if (data.Status + '' === '0') {
-                            $scope.couponType = 0;
-                            return toast(ret.Msg || '哈尼，输入的优惠码有错唉~');
+                            if($scope.couponType == 2){
+                                $scope.couponType = 0;   
+                            }
+                            return toast(ret.Msg || '哈尼，输入的优惠码有错唉');
                         }
                         couponInfo = data.Coupon;
                         if (data.Status + '' === '1') {
+                            lastCode = couponCode;
                             confirmCoupon();
                             $scope.closeMask();
                         }else if (data.Status == 2) {
