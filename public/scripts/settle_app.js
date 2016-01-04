@@ -104,7 +104,7 @@
                 return logisticsBenefits;
 
             }
-
+            $scope.isOnLoad = true;
             /**
              * 获得预订单列表
              */
@@ -112,7 +112,7 @@
                 .success(function (data) {
                      $scope.load = true;
                     if (data.Code == 200) {
-
+                        $scope.isOnLoad  = false;
                         var result = data.Data;
 
                         $scope.orderInfo = result;
@@ -322,7 +322,7 @@
                
                 var promotionUsed = order.PromotionUsed;
                 order.useCouponDesc = '';
-                if(promotionUsed.UseCouponCode && promotionUsed.inputCouponCode){
+                if($scope.couponType == 2){
                     order.PromotionUsed = {};                    
                     $scope.couponType = 0;
                     acountDiscount();
@@ -331,7 +331,7 @@
                     $scope.couponType = 2;
                     order.PromotionUsed = {};
                     if(couponInfo){
-                        confirmCoupon()
+                        confirmCoupon();
                     }else{
                         $scope.confirmInputCoupon(order);
                     }
@@ -401,11 +401,21 @@
             };
 
             var lastCode;
+            $scope.isvalidCouponCode = false;
             //确认输入优惠券
             $scope.confirmInputCoupon = function (order) {
                 var couponCode = $scope.coupon.code;
-                if (!couponCode || lastCode === couponCode) {
-                    return;
+
+                if(couponCode){
+                    if(lastCode === couponCode){
+                        return;
+                    }
+                }else{
+                    order.PromotionUsed.UseCouponCode = '';
+                    order.PromotionUsed.UseCouponAmount = 0;
+                    couponInfo = null;
+                    order.useCouponDesc = '';
+                    return
                 }
 
                 if(order.PromotionUsed.inputCouponCode){
@@ -430,6 +440,7 @@
                         Quantity: currProdcut.Products[i].ProductNumber
                     });
                 }
+                $scope.isvalidCouponCode = true;
 
                 data4jsonp(jsApiHost + '/api/Coupon/Bind', {
                     params: JSON.stringify({
@@ -439,6 +450,7 @@
                     }),
                     PlatformType: YmtApi.utils.getOrderSource()
                 }).success(function (ret, code) {
+                    $scope.isvalidCouponCode = false;
                     if (ret.Code == 200) {
                         var data = ret.Data;
                         if (data.Status + '' === '0') {
@@ -649,14 +661,16 @@
              */
             $scope.saveOrder = function () {
 
-                if ($scope.isPay) {
+                if ($scope.isPay || $scope.isOnLoad) {
                     return;
                 }
 
                 //@TODO 这里多订单需要优化
                 //避免用户输入完优惠码马上点击提交，这里做一次防提交处理
                 //选择了类型为输入，且输入了优惠码 但没有优惠码值 则视为在校验优惠码中
-                if($scope.couponType === 2 && $scope.coupon.code && !$scope.orderInfo.Orders[0].PromotionUsed.inputCouponCode){
+                if(($scope.couponType === 2 
+                        && $scope.coupon.code
+                        && !$scope.orderInfo.Orders[0].PromotionUsed.inputCouponCode) || $scope.isvalidCouponCode){
                     return;
                 }
 
@@ -784,6 +798,12 @@
                             $scope.canSubmint = true;
                             toast(res.Msg);
                         }
+                    }).error(function(data){
+                        console.log(data)
+                        $scope.isPay = false;
+                        //只要失败
+                        $scope.canSubmint = true;
+                        toast('操作失败，请重试！');
                     });
                 }
 
@@ -991,7 +1011,6 @@
                     }else if(YmtApi.isSaohuoApp){
                         clsName += ' ws-saohuo';
                     }
-                    console.log(ele[0])
                     ele[0].className += ' '+clsName;
                 }
             };
