@@ -114,6 +114,7 @@ body{
         //border:1px solid #9b9b9b;
         font-size:$rem*28;
         height:$rem*90;
+        -webkit-user-select:element;
     }
     .msg-text{
         color:#cc3333;
@@ -479,11 +480,13 @@ body{
             height:$rem*80;
             padding:$rem*21 $rem*24;
             color:#646464;
+            -webkit-user-select:element;
         }
         &.vliadCode{
             text-align:left;
             &>input{
                 width:$rem*250;
+                -webkit-user-select:element;
             }
             .btn{
                 height:$rem*80;
@@ -690,8 +693,10 @@ body{
             padding:$rem*26 $rem*20;
             font-size:$rem*30;
             border-radius: $rem*6;
-              background-color: #FFF;
-                box-shadow: 0 1px 0px #FFF;
+          background-color: #FFF;
+            box-shadow: 0 1px 0px #FFF;
+            user-select:element;
+            -webkit-user-select:element;
         }
         select{
             padding:0 $rem*20;
@@ -837,6 +842,7 @@ body{
         padding-left:$rem*90;
         transition: height 0.25s ease-in-out;
         color:#646464;
+        user-select:element;
         &:focus{
             height: $rem*250;
         }
