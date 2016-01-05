@@ -335,6 +335,7 @@
                     }else{
                         $scope.confirmInputCoupon(order);
                     }
+                    acountDiscount();
                 }
             }
 
