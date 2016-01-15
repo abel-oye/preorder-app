@@ -24,6 +24,10 @@
                 ($scope.$$phase || $scope.$root.$phase) ? fn(): $scope.$apply(fn);
             };
 
+            $scope.state = {
+                inInput:false
+            }
+
             var toast = function (msg, duration) {
                 ymtUI.toast({
                     msg: msg,

@@ -38,7 +38,8 @@
                 </div>
             </div>
             <div class="customs-input" ng-class="{error:idCardError}">
-                <input type="text" ng-model="idCard.no" name="" value="" maxlength="18" placeholder="请录入16位身份证号" ng-blur="validateIdcard()">
+                <input type="text" ng-model="idCard.no" name="" value="" 
+                        maxlength="18" placeholder="请录入16位身份证号" ng-blur="validateIdcard()">
                 <span class="msg-text ng-cloak">请输入正确的身份证号码</span>
             </div>
         </div>
@@ -118,11 +119,14 @@
                                 </label><span class="label">优惠码: </span>
                                 <input class="coupon-code" 
                                         type="text" 
-                                        name="" 
+                                        name="coupon.code" 
                                         value="" 
                                         placeholder="输入优惠码" 
                                         ng-model="coupon.code" 
-                                        ng-blur="confirmInputCoupon(i)" 
+                                        ng-focus="state.inInput = true"
+                                        ng-input="state.inInput = true"
+                                        ng-blur="confirmInputCoupon(i);state.inInput=false" 
+                                        ng-focus="inInput = true"
                                         ng-disabled="couponType === 1 && couponType === 2"
                                         get-focus="couponType === 2">
                                 <span class="discount-desc" ng-if="couponType === 2">{{i.useCouponDesc}}</span>
@@ -131,7 +135,10 @@
                     </div>
                     <!--留言-->
                     <div class="leaveMessage">
-                        <textarea ng-model="leaveMessage.content" placeholder="给卖家留言~" maxlength="80" adapt-textarea-minheight="2.09" row="4"></textarea>
+                        <textarea ng-model="leaveMessage.content" placeholder="给卖家留言~" 
+                                maxlength="80" adapt-textarea-minheight="2.09" row="4"
+                                ng-focus="state.inInput = true"
+                                ng-blur="state.inInput = false"></textarea>
                         <label for="">留言:</label>
                     </div>
                     <div class="declare">
@@ -148,7 +155,7 @@
             </div>
         </div>
         <div class="settle-tools-wrapper">
-            <div class="settle-tools">
+            <div class="settle-tools" ng-class="{'reRelative':state.inInput}">
                 <div class="text">
                    <!--  <div>
                        共计 {{productNumber || 0}} 件商品,合计:<strong>&yen;{{ orderInfo.TotalPrice || 0 }}</strong>

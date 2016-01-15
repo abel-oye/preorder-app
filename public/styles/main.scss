@@ -399,6 +399,10 @@ body{
     height:$rem*100;
     text-align:right;
     border-top:1px solid #dddddd;
+    display: table;
+    &.reRelative{
+        position:relative;
+    }
     .text{
         color:#646464;
         font-size:$rem*24;
@@ -977,8 +981,9 @@ body{
         background: #f1f1f1;
             color: #646464;
         font-size:$rem*24;
-         padding:$rem*8 $rem*24;
+         padding:$rem*8;
          line-height: 0;
+         min-width: $rem*140;
     }
 }
 
