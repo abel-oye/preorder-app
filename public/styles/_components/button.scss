@@ -27,6 +27,7 @@
 //主色
 $primary-color:#C33;
 $primary-active-color:#C33;
+$primary-invalid-color:#a7a7a7;
 
 //主色按钮
 .btn-primary{
@@ -52,6 +53,15 @@ $primary-active-color:#C33;
     width:100%;
 }
 
+//按钮失效样式
+.btn-invalid{
+    background-color:$primary-invalid-color;
+    color: #DEDEDE;
+    &:active{
+      background-color:$primary-invalid-color;
+    }
+}
+
 
 ////////////////////////////
 .btn-group{
@@ -66,3 +76,4 @@ $primary-active-color:#C33;
         }
     }
 }
+

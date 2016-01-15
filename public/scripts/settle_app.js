@@ -1,125 +1,7 @@
 /* global angular: true,YmtApi:true,_dc_:true */
 
-(function () {
+;(function () {
     'use strict';
-
-    /**
-     * ymtUI
-     *
-     * toast
-     */
-    angular.module('ymt.UI', []).factory('ymtUI', [function () {
-        var toastStatus = true;
-        /**
-         * [toast description]
-         * @param  {object} opts 配置
-         *          {string} msg 文本信息
-         *          {number} duration 时间
-         */
-        var toast = function (opts) {
-            if (toastStatus) {
-                toastStatus = false;
-                var errElm = $('.ymtui-toast');
-                if (!errElm[0]) {
-                    errElm = $('<div class="ymtui-toast"></div>')
-                        .appendTo('body');
-                }
-                errElm.html(opts.msg).addClass('show');
-
-                setTimeout(function () {
-                    errElm.removeClass('show');
-                    toastStatus = true;
-                    opts.callback && opts.callback();
-                }, opts.duration || 2400);
-            }
-        };
-
-        var alert = function (opts) {
-            if (comfirmState) {
-                comfirmState = false;
-                var comfirmElm = $('.ymtui-comfirm');
-                if (!comfirmElm[0]) {
-                    var html = [
-                        '<div class="ymtui-dialog ymtui-comfirm rubberBand animated">',
-                        '<div class="ymtui-commirm-hd"></div>',
-                        '<div class="ymtui-commirm-bd">',
-                        '</div>',
-                        '<div class="ymtui-commirm-ft">',
-                        '   <button type="button" class="btn btn-primary btn-full commirm">确定</button>',
-                        '</div>',
-                        '</div>',
-                    ];
-                    comfirmElm = $(html.join('')).appendTo('body');
-                }
-
-                var closeDialog = function () {
-                    $('.ymtui-comfirm').removeClass('open');
-                    $('.ymtui-dialog-mask').removeClass('open');
-                    comfirmState = true;
-                };
-                comfirmElm.find('.ymtui-commirm-bd').text(opts.msg);
-
-                comfirmElm.find('.ymtui-commirm-ft .commirm').one('click', function () {
-                    closeDialog();
-                    opts.callback && opts.callback();
-                });
-
-                comfirmElm.addClass('open');
-                $('.ymtui-dialog-mask').addClass('open');
-            }
-        };
-
-        var comfirmState = true;
-        /**
-         * 确认框
-         * @param  {object} opts [description]
-         * @param  {function} cb 点击成功操作之后的回调
-         */
-        //@TODO 这里要转成指令操作
-        var comfirm = function (opts, callbak) {
-            if (comfirmState) {
-                comfirmState = false;
-                var comfirmElm = $('.ymtui-comfirm');
-                if (!comfirmElm[0]) {
-                    var html = [
-                        '<div class="ymtui-dialog ymtui-comfirm rubberBand animated">',
-                        '<div class="ymtui-commirm-hd"></div>',
-                        '<div class="ymtui-commirm-bd">',
-                        '</div>',
-                        '<div class="ymtui-commirm-ft btn-group">',
-                        '   <div class="btn-group-col_2"><button type="button" class="btn close btn-full  btn-border-primary btn-white">取消</button></div>',
-                        '   <div class="btn-group-col_2"><button type="button" class="btn btn-primary btn-full commirm">确定</button></div>',
-                        '</div>',
-                        '</div>',
-                    ];
-                    comfirmElm = $(html.join('')).appendTo('body');
-                }
-
-                var closeDialog = function () {
-                    $('.ymtui-comfirm').removeClass('open');
-                    $('.ymtui-dialog-mask').removeClass('open');
-                    comfirmState = true;
-                };
-                comfirmElm.find('.ymtui-commirm-bd').text(opts.msg);
-
-                comfirmElm.find('.ymtui-commirm-ft .close').on('click', closeDialog);
-                comfirmElm.find('.ymtui-commirm-ft .commirm').one('click', function () {
-                    closeDialog();
-                    callbak && callbak();
-                });
-
-                comfirmElm.addClass('open');
-                $('.ymtui-dialog-mask').addClass('open');
-            }
-        };
-
-        return {
-            toast: toast,
-            comfirm: comfirm,
-            alert: alert
-        };
-    }]);
-
     /**
      * [preOrder ]
      * @type {[type]}
@@ -166,19 +48,85 @@
 
             $scope.load = false;
 
+            $scope.leaveMessage = {
+                content:''
+            }
+
+            /**
+             * 小计价格
+             * @param order
+             */
+            $scope.totalPrice = function(order){
+                var i=0,len=order.Products.length,price=0;
+                for(;i<len;i++){
+                    price += order.Products[i].QuotePrice * order.Products[i].ProductNumber;
+                }
+                return price;
+            }
+
+            /**
+             * 小计运费
+             * @param order
+             */
+            $scope.totalFreight = function(order){
+                var i=0,len=order.Products.length,freight=0;
+                for(;i<len;i++){
+                    freight += order.Products[i].Freight;
+                }
+                return freight;
+            }
+
+            /**
+             * 统计商品数量
+             * @param order {object} 订单对象 如果不传递则获取所有订单商品
+             *                       数量
+             */
+            $scope.totalProNum = function(order){
+                var num = 0,
+                    i = 0,
+                    len = orders.length;
+                for (; i < len; i++) {
+                    num += orders[i].ProductNumber;
+                }
+                return num;
+            }
+
+            $scope.logisticsConversion = function (data) {
+                //物流优惠
+                var logisticsBenefits = '';
+                if (data.Freight == 0) {
+                    logisticsBenefits += '包邮';
+                }
+                if (data.IsTariffType) {
+                    logisticsBenefits += '包税';
+                }
+                //物流优惠
+                return logisticsBenefits;
+
+            }
+            $scope.isOnLoad = true;
+            /**
+             * 获得预订单列表
+             */
             data4jsonp(jsApiHost + '/api/preorder/ListOrderInfo')
                 .success(function (data) {
                      $scope.load = true;
                     if (data.Code == 200) {
+                        $scope.isOnLoad  = false;
                         var result = data.Data;
 
                         $scope.orderInfo = result;
 
-
-
                         var orders = result.Orders;
 
                         if(orders && orders[0]){
+                            //获得可使用的优惠券列表
+                            //默认先拉取第一个商品的优惠券信息
+                            //@TODO 如果要支持多订单这里需要调整
+                            getCoupon(orders[0]);
+
+                            //存在可以提交的订单
+                            $scope.canSubmint = true;
 
                             //保存原价
                             $scope.originalTotal = result.TotalPrice = parseFloat(result.TotalPrice.toFixed(2));
@@ -196,6 +144,7 @@
                                 }
                                 return num;
                             })(orders);
+
                         }
 
 
@@ -272,6 +221,10 @@
             $scope.couponOpen = false;
             $scope.validateStep = 0;
 
+            /**
+             * 优惠券列表加载状态
+             * @type {Boolean}
+             */
             $scope.couponLoading = true;
 
             var currProdcut,
@@ -295,8 +248,20 @@
                         $scope.couponLoading = false;
                         if (ret.Code == 200) {
                             var result = ret.Data;
-                            $scope.couponsList = result.Coupons;
-                            $scope.couponsDesc = $scope.CouponsList && $scope.CouponsList.length === 0 ? '没有可使用的优惠券' : '';
+                            order.isLoadCoupon = true;
+
+                            $scope.couponsList = result.Coupons || [];
+
+                            //默认选中第一张
+                            if($scope.couponsList[0]){
+                                currProdcut = order;
+                                $scope.selectCoupon($scope.couponsList[0]);
+                                $scope.coupon.selectCouponIndex = 0;
+                                $scope.switchCoupon(order);
+                            }else{
+                                order.useDiscount = '没有可使用的优惠券';
+                                $scope.coupon.selectCouponIndex = 0;
+                            }
                         }
                         else {
                             toast(ret.Msg);
@@ -306,27 +271,89 @@
                 };
             //打开使用优惠券
             $scope.openUserCoupon = function (order) {
-                if(order.PromotionUsed.UseCouponCode){
-                    order.PromotionUsed.UseCouponCode = '';
-                    acountDiscount();
-                    order.useDiscount = '';
-                }else{
-                    $scope.couponOpen = true;
-                    $scope.maskOpen = true;
 
-                    currProdcut = order;
-
-                    if (!$scope.couponsList) {
-                        getCoupon(order);
-                    }
+                //当已经选中优惠码 优惠券不能点击
+                if($scope.couponType === 2){
+                    return;
                 }
+
+                //判断当前订单是否已经加载过优惠券列表了
+                if(!order.isLoadCoupon){
+                    return toast('正在加载可使用的优惠券');
+                }
+
+                if(!$scope.couponsList[0]){
+                    return;
+                }
+
+                $scope.couponOpen = true;
+                $scope.maskOpen = true;
+
+                currProdcut = order;                
+
+                /*if (!$scope.couponsList) {
+                    getCoupon(order);
+                }*/
 
             };
 
-            $scope.selectCoupon = function (coupon) {
-                currProdcut.PromotionUsed = {};
-                currProdcut.PromotionUsed.UseCouponCode = coupon.CouponCode;
+            //切换优惠券选择状态
+            $scope.switchCoupon = function(order){
+               
+                var promotionUsed = order.PromotionUsed;
+                order.useCouponDesc = '';
+                if(promotionUsed.UseCouponCode && !promotionUsed.inputCouponCode){
+                    order.PromotionUsed = {};
+                    $scope.couponType = 0;
+                    
+                    acountDiscount();
+                }else{
+                    //判断是否被选择过优惠券
+                    if(order.selectCoupon){
+                        $scope.selectCoupon(order.selectCoupon);
+                    }else{
+                        $scope.openUserCoupon(order);
+                    }
+                }
+            }
 
+            //切换优惠券输入状态
+            $scope.switchInputCoupon = function(order){
+               
+                var promotionUsed = order.PromotionUsed;
+                order.useCouponDesc = '';
+                if($scope.couponType == 2){
+                    order.PromotionUsed = {};                    
+                    $scope.couponType = 0;
+                    acountDiscount();
+
+                }else{
+                    $scope.couponType = 2;
+                    order.PromotionUsed = {};
+                    if(couponInfo){
+                        confirmCoupon();
+                    }else{
+                        $scope.confirmInputCoupon(order);
+                    }
+                    acountDiscount();
+                }
+            }
+
+            /**
+             * 选择可使用的优惠券
+             */
+            $scope.selectCoupon = function (coupon,index) {
+
+                index = index || $scope.coupon.selectCouponIndex || 0;
+                coupon = coupon || $scope.couponsList[index];
+                //作为切换选中和取消选中的优惠券计算；
+                currProdcut.selectCoupon = coupon;
+
+                currProdcut.PromotionUsed = {};
+                currProdcut.PromotionUsed.UseCouponCode =  coupon.CouponCode;
+
+                //currProdcut.useCouponDesc = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
+                currProdcut.useCouponDesc =  (coupon.UseType == 1 ? '抵扣' : '返红包') + '￥' +coupon.CouponValue;
                 currProdcut.useDiscount = '满' + coupon.CouponOrderValue + (coupon.UseType == 1 ? '抵' : '返') + coupon.CouponValue;
 
                 if (coupon.UseType == 1) {
@@ -336,25 +363,16 @@
                 acountDiscount();
 
                 $scope.closeMask();
+
+                $scope.couponType = 1;
+
+                $scope.selectCouponIndex = index;
             };
 
-            //打开输入优惠券
-            $scope.openInputCoupon = function (order) {
-               if(order.PromotionUsed.inputCouponCode){
-                    order.PromotionUsed.UseCouponCode = '';
-                    order.PromotionUsed.inputCouponCode = false;
-                    currProdcut.PromotionUsed.UseCouponAmount = 0;
-                    acountDiscount();
-                    order.useDiscount = '';
-                }else{
-                   $scope.validateStep = 1;
-                   $scope.maskOpen = true;
-                   $scope.coupon.code = '';
-
-                   currProdcut = order;
-                }
-            };
-
+           /* $scope.$watch('selectCouponIndex',function(c,n){
+                console.log(c,n)
+            })
+*/
             var currCoupon = {
 
                 },
@@ -375,17 +393,42 @@
 
                 currProdcut.PromotionUsed.UseCouponAmount = parseInt(couponInfo.Type == 1 ? couponInfo.Value : 0, 10);
 
-                currProdcut.useDiscount = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
+                //currProdcut.useCouponDesc = couponInfo.Type == 1 ? '本单抵扣' + couponInfo.Value + '元' : '账户返' + couponInfo.Value + '元红包';
+                currProdcut.useCouponDesc = '满'+couponInfo.CouponOrderValue+(couponInfo.Type == 1 ?'减':'返')+ parseInt(couponInfo.Value);
 
                 acountDiscount();
+
+                $scope.couponType = 2;
             };
 
+            var lastCode;
+            $scope.isvalidCouponCode = false;
             //确认输入优惠券
-            $scope.confirmInputCoupon = function () {
-                if (!$scope.coupon.code) {
-                    toast('优惠码不能为空');
-                    return;
+            $scope.confirmInputCoupon = function (order) {
+                var couponCode = $scope.coupon.code;
+
+                if(couponCode){
+                    if(lastCode === couponCode){
+                        return;
+                    }
+                }else{
+                    order.PromotionUsed.UseCouponCode = '';
+                    order.PromotionUsed.UseCouponAmount = 0;
+                    couponInfo = null;
+                    order.useCouponDesc = '';
+                    return
                 }
+
+                if(order.PromotionUsed.inputCouponCode){
+                     order.PromotionUsed.UseCouponCode = '';
+                     currProdcut.PromotionUsed.UseCouponAmount = 0;
+                     acountDiscount();
+                     //order.useDiscount = '';
+                 }else{
+                    //$scope.coupon.code = '';
+
+                    currProdcut = order;
+                 }
 
                 currCoupon.CouponCode = $scope.coupon.code = String.prototype.toLocaleUpperCase.call($scope.coupon.code);
 
@@ -398,124 +441,50 @@
                         Quantity: currProdcut.Products[i].ProductNumber
                     });
                 }
+                $scope.isvalidCouponCode = true;
 
                 data4jsonp(jsApiHost + '/api/Coupon/Bind', {
                     params: JSON.stringify({
                         ProductsAmount: ProductsAmount,
                         SellerId: currProdcut.SellerId,
-                        CouponCode: $scope.coupon.code
+                        CouponCode: couponCode
                     }),
                     PlatformType: YmtApi.utils.getOrderSource()
                 }).success(function (ret, code) {
+                    $scope.isvalidCouponCode = false;
                     if (ret.Code == 200) {
                         var data = ret.Data;
                         if (data.Status + '' === '0') {
-                            return toast(ret.Msg || '您输入的优惠码不正确或不能使用');
+                            if($scope.couponType == 2){
+                                $scope.couponType = 0;   
+                            }
+                            return toast(ret.Msg || '哈尼，输入的优惠码有错唉');
                         }
                         couponInfo = data.Coupon;
                         if (data.Status + '' === '1') {
+                            lastCode = couponCode;
                             confirmCoupon();
                             $scope.closeMask();
-                        }
-                        else if (data.Status == 2) {
+                        }else if (data.Status == 2) {
                             //进行身份证绑定
                             $scope.validateStep = 2;
                         }
                     }
                     else {
+                        $scope.couponType = 0;
                         toast(ret.Msg);
                     }
 
                 });
             };
-            //验证手机号码
-            var validatePhoneNumber = function () {
-                var phone = $scope.phoneNumber;
-                //验证是否为空
-                if (phone === '') {
-                    toast('手机号码不能为空,请重新输入');
-                    return false;
-                }
-                if (!/^1[3|4|5|8][0-9]\d{8}$/.test(phone)) {
-                    toast('手机号码有误，请重新输入');
-                    return false;
-                }
-                return true;
-            };
-
-            //获得验证码
-            $scope.resend = function () {
-                if ($scope.btnStatus) {
-                    return;
-                }
-
-                if (!validatePhoneNumber()) {
-                    return;
-                }
-
-                $scope.coupon.btnStatus = true;
-
-                var countDown = function (time) {
-                    $scope.coupon.btnTxt = time + 's后重发';
-                    if (time--) {
-                        $timeout(function () {
-                            countDown(time);
-                        }, 1000);
-                    }
-                    else {
-                        $scope.coupon.btnStatus = false;
-                        $scope.coupon.btnTxt = '重新发送';
-                    }
-                };
-
-                data4jsonp(jsApiHost + '/api/User/SendBindMobileValidateCode', {
-                    Phone: $scope.phoneNumber
-                }).success(function (result) {
-                    if (result.Code != 200) {
-                        $scope.coupon.btnStatus = false;
-                        $scope.coupon.btnTxt = '重新发送';
-                        return toast(result.Msg || '发送失败');
-                    }
-                    else {
-                        toast('验证码已发送，请查收短信');
-                        countDown(60);
-                    }
-                });
-
-
-            };
-            //完成验证
-            $scope.completeValidate = function () {
-                var validateCode = $scope.coupon.validCode;
-                if (!validateCode || $scope.isComplete) {
-                    return;
-                }
-                if (!validatePhoneNumber()) {
-                    return;
-                }
-                $scope.isComplete = true;
-
-                data4jsonp(jsApiHost + '/api/User/VerifyBindMobileValidateCode', {
-                    Phone: $scope.phoneNumber,
-                    Code: validateCode
-                }).success(function (result) {
-                    $scope.isComplete = false;
-                    if (result.Code == 200) {
-                        toast('已完成手机号码验证');
-                        confirmCoupon();
-                        $scope.closeMask();
-                    }
-                    else {
-                        toast(result.Msg || '无法绑定此号码，请稍后再试');
-                        $scope.isComplete = false;
-                    }
-                });
-            };
+          
+           
 
             $scope.closeMask = function () {
                 $scope.maskOpen = false;
                 $scope.couponOpen = false;
                 $scope.validateStep = 0;
+                $scope.entrustOpenStatus = false;
 
             };
 
@@ -523,9 +492,11 @@
              * 使用红包
              */
             $scope.useGift = function (product, val) {
+
                 if(product.PromotionUsed.UseGiftAmount){
                     product.PromotionUsed.UseGiftAmount = 0;
-                    product.useDiscount = '';
+                    //product.useDiscount = '';
+                    $scope.couponType = 0;
                 }else{
                     if (product.isUseGift || product.usedGift === 0) {
                         return;
@@ -533,8 +504,11 @@
                     product.PromotionUsed = {};
                     product.PromotionUsed.UseGiftAmount = product.usedGift;
 
-                    product.useDiscount = '￥' + product.usedGift + '红包';
+                    $scope.couponType = 3;
+                    product.useCouponDesc = '抵扣￥' + product.usedGift;
                 }
+
+               
 
                 acountDiscount();
             };
@@ -544,13 +518,18 @@
              * 计算能使用的红包数
              */
             $scope.canUseGift = function (product) {
-                product.usedGift = parseInt(product.Promotion.MaxUseGiftAmount > $scope.orderInfo.AvailableGiftAmount ? $scope.orderInfo.AvailableGiftAmount : product.Promotion.MaxUseGiftAmount) || 0;
+                product.usedGift = parseInt(Math.min(product.Promotion.MaxUseGiftAmount,$scope.orderInfo.AvailableGiftAmount)) || 0;
             };
 
             $scope.openAddress = function () {
                 switchAddressState(1);
                 AddressService.queryAddressList();
             };
+
+            $scope.openEntrust = function(){
+                $scope.entrustOpenStatus = true;
+                $scope.maskOpen = true;
+            }
 
             //获得地址服务
             $scope.AddressService = AddressService;
@@ -655,9 +634,10 @@
                 });
             };
 
+            //是否可以提交
+            $scope.canSubmint = false;
 
-            var isSubmint = false,
-                isPay = false;
+            $scope.isPay = false;
 
             $scope.saveOrderIng = false;
             $scope.idCard = {
@@ -681,14 +661,28 @@
              * 保存订单
              */
             $scope.saveOrder = function () {
-                if (isPay) {
+
+                if ($scope.isPay || $scope.isOnLoad) {
+                    return;
+                }
+
+                //@TODO 这里多订单需要优化
+                //避免用户输入完优惠码马上点击提交，这里做一次防提交处理
+                //选择了类型为输入，且输入了优惠码 但没有优惠码值 则视为在校验优惠码中
+                if(($scope.couponType === 2 
+                        && $scope.coupon.code
+                        && !$scope.orderInfo.Orders[0].PromotionUsed.inputCouponCode) || $scope.isvalidCouponCode){
                     return;
                 }
 
                 //防止表单重复提交
-                if (isSubmint) {
+                if (!$scope.canSubmint) {
                     return toast('订单已生成，请勿重复提交');
                 }
+
+                $scope.isPay = true;
+
+                $scope.canSubmint = false;
 
                 if (!$scope.orderInfo) {
                     return;
@@ -703,6 +697,8 @@
                 //是否需要上传身份证
                 if ($scope.isUploadIdCard && $scope.hasBonded) {
                     if (!$scope.validateIdcard()) {
+                        $scope.canSubmint = true;
+                        $scope.isPay = false;
                         return;
                     }
                 }
@@ -723,6 +719,9 @@
                         }
                         else {
                             toast('保存身份证信息失败');
+                            //只要失败
+                            $scope.canSubmint = true;
+                            $scope.isPay = false;
                         }
                     }
                     else {
@@ -762,12 +761,12 @@
                         params: JSON.stringify(data),
                         orderSource: YmtApi.utils.getOrderSource(),
                         ClientType: /\(i[^;]+;( U;)? CPU.+Mac OS X/ig.test(ua) ? 3 : /Android|Linux/ig.test(ua) ? 4 : 0,
-                        DeviceId: search.DeviceId || search.DeviceToken || '0000000'
+                        DeviceId: search.DeviceId || search.DeviceToken || '0000000',
+                        channel:(ua.match(/Channel\=(?:([^\s]*))/i) || [])[1] || 'wap',//获得app下载渠道
+                        LeaveMessage:$scope.leaveMessage.content//留言
                     }).success(function (res) {
-                        isPay = true;
                         if (res.Code == 200) {
                             var result = res.Data;
-                            isSubmint = true;
 
                             if (!(result.TradingIds && result.TradingIds[0])) {
                                 toast('获取交易号失效');
@@ -795,8 +794,17 @@
 
                         }
                         else {
+                            $scope.isPay = false;
+                            //只要失败
+                            $scope.canSubmint = true;
                             toast(res.Msg);
                         }
+                    }).error(function(data){
+                        console.log(data)
+                        $scope.isPay = false;
+                        //只要失败
+                        $scope.canSubmint = true;
+                        toast('操作失败，请重试！');
                     });
                 }
 
@@ -968,6 +976,157 @@
                 link: function (scope, ele) {
                     ele[0].addEventListener('touchmove', function (event) {
                         event.preventDefault();
+                    }, false);
+                }
+            };
+        }
+    ]);  
+    /**
+     * 判断是什么系统增加相应class
+     * mac系统 ws-mac
+     * iphone手机 ws-iphone
+     * android环境 ws-android
+     * 微信 ws-wechat
+     * 扫货 ws-saohuo
+     *
+     * 这个指令应该加载顶级元素
+     */
+    app.directive('whatSystem', [
+        function () {
+            return {
+                restrict: 'A',
+                link: function (scope, ele) {
+                    var ua = window.navigator.useragent,
+                        clsName='';
+                    if(YmtApi.isIos){
+                        clsName += ' ws-mac';
+                        if(YmtApi.isIphone){
+                            clsName += ' ws-iphone';
+                        }
+                    }else if(YmtApi.isAndroid){
+                        clsName += ' ws-android';
+                    }                    
+                    
+                    if(YmtApi.isWechat){
+                        clsName += ' ws-wechat';
+                    }else if(YmtApi.isSaohuoApp){
+                        clsName += ' ws-saohuo';
+                    }
+                    ele[0].className += ' '+clsName;
+                }
+            };
+        }
+    ]);
+
+     //获得焦点
+    app.directive('getFocus', [
+        function () {
+            return {
+                restrict: 'A',
+                scope:{getFocus:'='},
+                link: function (scope, ele) {
+                    scope.$watch('getFocus',function(n,l){
+                        if(n){
+                            ele[0].focus();
+                        }
+                    });                   
+                }
+            };
+        }
+    ]);
+
+
+    /**
+     * 禁止事件冒泡
+     */
+   /* app.directive('stopPropagation', [
+        function () {
+            return {
+                restrict: 'A',
+                link: function (scope, ele,attr) {
+                    console.log(2)
+                    var startY = 0;
+
+                        // Store enabled status
+                        var enabled = false;
+
+                        var handleTouchmove = function(evt) {
+                            console.log(handleTouchmove)
+                            // Get the element that was scrolled upon
+                            var el = evt.target;
+
+                            // Check all parent elements for scrollability
+                            while (el !== document.body) {
+                                // Get some style properties
+                                var style = window.getComputedStyle(el);
+
+                                if (!style) {
+                                    // If we've encountered an element we can't compute the style for, get out
+                                    break;
+                                }
+
+                                var scrolling = style.getPropertyValue('-webkit-overflow-scrolling');
+                                var overflowY = style.getPropertyValue('overflow-y');
+                                var height = parseInt(style.getPropertyValue('height'), 10);
+
+                                // Determine if the element should scroll
+                                var isScrollable = scrolling === 'touch' && (overflowY === 'auto' || overflowY === 'scroll');
+                                var canScroll = el.scrollHeight > el.offsetHeight;
+
+                                if (isScrollable && canScroll) {
+                                    // Get the current Y position of the touch
+                                    var curY = evt.touches ? evt.touches[0].screenY : evt.screenY;
+
+                                    // Determine if the user is trying to scroll past the top or bottom
+                                    // In this case, the window will bounce, so we have to prevent scrolling completely
+                                    var isAtTop = (startY <= curY && el.scrollTop === 0);
+                                    var isAtBottom = (startY >= curY && el.scrollHeight - el.scrollTop === height);
+
+                                    // Stop a bounce bug when at the bottom or top of the scrollable element
+                                    if (isAtTop || isAtBottom) {
+                                        evt.preventDefault();
+                                    }
+
+                                    // No need to continue up the DOM, we've done our job
+                                    return;
+                                }
+
+                                // Test the next parent
+                                el = el.parentNode;
+                            }
+
+                            // Stop the bouncing -- no parents are scrollable
+                            evt.preventDefault();
+                        };
+
+                        var handleTouchstart = function(evt) {
+                            // Store the first Y position of the touch
+                            startY = evt.touches ? evt.touches[0].screenY : evt.screenY;
+                        };
+
+                        
+                        window.removeEventListener('touchstart', handleTouchstart, false);
+                        window.removeEventListener('touchmove', handleTouchmove, false);
+                        enabled = false;
+
+                        console.log('touchmove')
+                }
+            };
+        }
+    ]);*/
+
+
+    /**
+     * 适配textarea 的高度
+     */
+    app.directive('adaptTextareaMinheight', [
+        function () {
+            return {
+                restrict: 'A',
+                link: function (scope, ele, attr) {
+                    ele[0].addEventListener('blur', function (event) {
+                        var row = this.value.split("\n").length;
+                        this.style.minHeight = attr.adaptTextareaMinheight*row-1+'rem';
                     }, false);
                 }
             };
