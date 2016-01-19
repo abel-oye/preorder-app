@@ -767,6 +767,7 @@
                         ClientType: /\(i[^;]+;( U;)? CPU.+Mac OS X/ig.test(ua) ? 3 : /Android|Linux/ig.test(ua) ? 4 : 0,
                         DeviceId: search.DeviceId || search.DeviceToken || '0000000',
                         channel:(ua.match(/Channel\=(?:([^\s]*))/i) || [])[1] || 'wap',//获得app下载渠道
+                        ThirdId:search.ThirdId,
                         LeaveMessage:$scope.leaveMessage.content//留言
                     }).success(function (res) {
                         if (res.Code == 200) {
