@@ -768,7 +768,7 @@
                         DeviceId: search.DeviceId || search.DeviceToken || '0000000',
                         channel:(ua.match(/Channel\=(?:([^\s]*))/i) || [])[1] || 'wap',//获得app下载渠道
                         ThirdId:search.ThirdId,
-                        LeaveMessage:$scope.leaveMessage.content//留言
+                        LeaveMessage:encodeURIComponent(encodeURIComponent($scope.leaveMessage.content))//留言
                     }).success(function (res) {
                         if (res.Code == 200) {
                             var result = res.Data;
