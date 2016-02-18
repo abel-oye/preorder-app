@@ -42,9 +42,9 @@
              * @return {Promise}
              */
             var data4jsonp = function (url, param) {
-                return $http.jsonp(YmtApi.utils.addParam(YmtApi.utils.addAuth(url), YmtApi.extends(param || {}, {
-                    callback: 'JSON_CALLBACK'
-                })));
+                param = param || {};
+                param.callback =  'JSON_CALLBACK'
+                return $http.jsonp(YmtApi.utils.addParam(url,param,true));
             };
 
             $scope.discountPrice = 0;
@@ -1205,9 +1205,9 @@
              * @return {Promise}
              */
             var data4jsonp = function (url, param) {
-                return $http.jsonp(YmtApi.utils.addParam(YmtApi.utils.addAuth(url), YmtApi.extends(param || {}, {
-                    callback: 'JSON_CALLBACK'
-                })));
+                param = param || {};
+                param.callback =  'JSON_CALLBACK'
+                return $http.jsonp(YmtApi.utils.addParam(url,param,true));
             };
 
             /**
@@ -1430,7 +1430,7 @@
                 }*/
 
                 data4jsonp(jsApiHost + '/api/address/' + url, {
-                    params: JSON.stringify(obj)
+                    params: encodeURIComponent(encodeURIComponent(JSON.stringify(obj)))
                 }).success(function (ret) {
                     if (ret.Code == 200) {
                         cb && cb(ret.Data);
