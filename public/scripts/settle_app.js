@@ -1273,7 +1273,10 @@
              */
             var getCityList = function (cb) {
 
-                var cityListStr = localStorage.getItem('cityListStr');
+                var cityKey = 'cityListStr1',
+                    cityListStr = localStorage.getItem(cityKey);
+                //@TODO 现在的本地缓存没有版本号，每次变更需要重置原来的key，而且每次都要删除原key
+                localStorage.removeItem('cityListStr');
 
                 if (cityListStr) {
                     try {
@@ -1284,7 +1287,7 @@
                     }
                     catch (e) {
                         console.log(e);
-                        localStorage.removeItem('cityListStr');
+                        localStorage.removeItem(cityKey);
                         getCityListJson();
                     }
                 }
