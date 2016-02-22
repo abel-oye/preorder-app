@@ -1253,6 +1253,7 @@
                             addressService.selectDistrictObj = addressService.cityObj[addressService.select.CityNameId + ',' + i];
                         }
                     }
+                    addressService.item.DistrictName = '选择县区';
                 }else{
                     addressService.selectDistrictObj = {};
 
