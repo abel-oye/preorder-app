@@ -1188,7 +1188,8 @@
 
             var addressService = {
                 list: [],
-                item: {}
+                item: {},
+                history:{}
             };
 
             var toast = function (msg, duration) {
@@ -1247,13 +1248,20 @@
                 //如果未选择市 清空区
                 if(addressService.item.CityName){
                     addressService.selectDistrictObj= [];
+                    if(addressService.history.CityName != addressService.item.CityName){
+                        //只有历史不为空，与本次城市不一致才将县置为空
+                        if(addressService.history.CityName){
+                            addressService.item.DistrictName = '选择县区';
+                        }
+                        addressService.history.CityName = addressService.item.CityName;
+                        
+                    }   
                     for (var i in addressService.cityList[addressService.select.CityNameId]) {
                         if (addressService.item.CityName == addressService.cityList[addressService.select.CityNameId][i]) {
                             //addressService.select.DistrictNameId = addressService.select.CityNameId + ',' + i;
                             addressService.selectDistrictObj = addressService.cityObj[addressService.select.CityNameId + ',' + i];
                         }
                     }
-                    addressService.item.DistrictName = '选择县区';
                 }else{
                     addressService.selectDistrictObj = {};
 
@@ -1413,17 +1421,36 @@
                     return false;
                 }
 
-                if (!obj.CityName || obj.CityName === '' || obj.CityName === '选择市'
-                    || !obj.DistrictName || obj.DistrictName === '' || obj.DistrictName === '选择县区'
-                    || !obj.ProvinceName || obj.ProvinceName === '' || obj.ProvinceName === '选择省份'
-                    || !obj.Details || obj.Details === '' || !obj.PostCode || obj.PostCode === '') {
-                    toast('地址与邮编填写不完整');
+                if(!obj.ProvinceName || obj.ProvinceName === '' || obj.ProvinceName === '选择省份'){
+                    toast('请选择省份');
                     return false;
                 }
+
+                if (!obj.CityName || obj.CityName === '' || obj.CityName === '选择市'){
+                    toast('请选择市');
+                    return false;
+                }
+
+                if(!obj.DistrictName || obj.DistrictName === '' || obj.DistrictName === '选择县区'){
+                    toast('请选择县区');
+                    return false;
+                }
+
+                 if(!obj.Details || obj.Details === ''){
+                    toast('详情地址填写不完整');
+                    return false;
+                }
+
+                if(!obj.PostCode || obj.PostCode === ''){
+                    toast('邮编填写不完整');
+                    return false;
+                }
+
                 if (/^((\d)*|([a-z]|[A-Z]))$/.test(obj.Details)) {
                     toast('地址不能只是数字和字母');
                     return false;
                 }
+
                 if (!/^\d*$/.test(obj.PostCode)) {
                     toast('邮政编码只能是数字');
                     return false;
@@ -1434,6 +1461,7 @@
                 }*/
 
                 data4jsonp(jsApiHost + '/api/address/' + url, {
+                    //@TODO 由于调用jyh上面的ymtapi的版本 param方法错误，多解码一次导致参数错误；
                     params: encodeURIComponent(encodeURIComponent(JSON.stringify(obj)))
                 }).success(function (ret) {
                     if (ret.Code == 200) {
