@@ -1282,6 +1282,42 @@
              */
             var getCityList = function (cb) {
 
+                var getCityListJson = function () {
+                    data4jsonp(jsApiHost + '/api/address/CityListByJson').success(function (ret) {
+                        if (ret.Code == 200) {
+                            var city = ret.Data.City;
+                            addressService.cityList = JSON.parse(city);
+                            addressService.cityObj = parseCity(JSON.parse(city));
+                            cb && cb();
+                            //保存放在主流程之后
+                            try {
+                                localStorage.setItem('cityListStr', city);
+                            }
+                            catch (e) {}
+
+                        }
+                        else {
+                            toast(ret.Msg);
+                        }
+
+                    });
+                }
+
+                var parseCity = function(cityObj) {
+                    var cityList = {},tempAttr;
+                    for (var i in cityObj) {
+                        tempAttr = [];
+                        for (var j in cityObj[i]) {
+                            var temp = {};
+                            temp['id'] = i + ',' + j;
+                            temp['name'] = cityObj[i][j];
+                            tempAttr.push(temp);
+                        }
+                        cityList[i] = tempAttr;
+                    }
+                    return cityList;
+                }
+
                 var cityKey = 'cityListStr1',
                     cityListStr = localStorage.getItem(cityKey);
                 //@TODO 现在的本地缓存没有版本号，每次变更需要重置原来的key，而且每次都要删除原key
@@ -1303,43 +1339,6 @@
                 else {
                     getCityListJson();
                 }
-
-                function getCityListJson() {
-                    data4jsonp(jsApiHost + '/api/address/CityListByJson').success(function (ret) {
-                        if (ret.Code == 200) {
-                            var city = ret.Data.City;
-                            addressService.cityList = JSON.parse(city);
-                            addressService.cityObj = parseCity(JSON.parse(city));
-                            cb && cb();
-                            //保存放在主流程之后
-                            try {
-                                localStorage.setItem('cityListStr', city);
-                            }
-                            catch (e) {}
-
-                        }
-                        else {
-                            toast(ret.Msg);
-                        }
-
-                    });
-                }
-
-                function parseCity(cityObj) {
-                    var cityList = {},tempAttr;
-                    for (var i in cityObj) {
-                        tempAttr = [];
-                        for (var j in cityObj[i]) {
-                            var temp = {};
-                            temp['id'] = i + ',' + j;
-                            temp['name'] = cityObj[i][j];
-                            tempAttr.push(temp);
-                        }
-                        cityList[i] = tempAttr;
-                    }
-                    return cityList;
-                }
-
             };
 
             /**
@@ -1352,6 +1351,7 @@
                         if (result.Code == 200) {
                             if (result.Data && (resultAddress = result.Data.Address)) {
                                 addressService.item = resultAddress;
+                                addressService.history = {}
                                 getCityList(function () {
                                     addressService.selectCity();
                                     addressService.areaCity();
