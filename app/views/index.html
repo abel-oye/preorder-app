@@ -12,7 +12,7 @@
     <script data-js-path="redraw.js">
      !(function(relWinth,relFontSize){var ua=navigator.userAgent,isIos=/iphone|ipad|ipod/i.test(ua),isMobile=/Mobile/i.test(ua);var meta=document.querySelector("[name=viewport]")||(function(){var _meta=document.createElement("meta");_meta.name="viewport"})(),content=meta.content||"",matchScale=content.match(/initial\-scale=([\d\.]+)/),matchWidth=content.match(/width=([\d\.]+)/),dpr=isIos?window.devicePixelRatio?Math.min(window.devicePixelRatio,3):1:1,docEl=document.documentElement,maxWidth=dpr*(docEl.dataset.mw||750),scale=1/dpr,tid;relWinth=relWinth||320;relFontSize=relFontSize||16;if(meta){if(matchScale){content=content.replace(/initial\-scale=([\d\.]+)/,"initial-scale="+scale).replace(/minimum\-scale=([\d\.]+)/,"minimum-scale="+scale).replace(/maximum\-scale=([\d\.]+)/,"maximum-scale="+scale)}else{content+=",initial-scale="+scale}meta.content=content}else{meta=doc.createElement("meta");meta.name="viewport";meta.content=content;docEl.firstElementChild.appendChild(meta)}var redraw=function(){var width=docEl.getBoundingClientRect().width;var fz=Math.min(width,maxWidth)/relWinth*relFontSize;docEl.style.fontSize=fz+"px"};if(isMobile){window.addEventListener("resize",function(){clearTimeout(tid);tid=setTimeout(redraw,300)},false);redraw()}else{docEl.style.fontSize="16px"}})(375,16);
     </script>
-    <link rel="stylesheet" href="http://static.preorder.app.ymatou.com/styles/index-0107cc7aa4.css">
+    <link rel="stylesheet" href="http://static.preorder.app.ymatou.com/styles/index-41da804a2f.css">
     <style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}</style>
 </head>
 <body what-system>
@@ -36,7 +36,8 @@
                 </div>
             </div>
             <div class="customs-input" ng-class="{error:idCardError}">
-                <input type="text" ng-model="idCard.no" name="" value="" maxlength="18" placeholder="请录入16位身份证号" ng-blur="validateIdcard()">
+                <input type="text" ng-model="idCard.no" name="" value=""
+                        maxlength="18" placeholder="请录入16位身份证号" ng-blur="validateIdcard()">
                 <span class="msg-text ng-cloak">请输入正确的身份证号码</span>
             </div>
         </div>
@@ -119,11 +120,14 @@
                                 </label><span class="label">优惠码: </span>
                                 <input class="coupon-code"
                                         type="text"
-                                        name=""
+                                        name="coupon.code"
                                         value=""
                                         placeholder="输入优惠码"
                                         ng-model="coupon.code"
-                                        ng-blur="confirmInputCoupon(i)"
+                                        ng-focus="state.inInput = true"
+                                        ng-input="state.inInput = true"
+                                        ng-blur="confirmInputCoupon(i);state.inInput=false"
+                                        ng-focus="inInput = true"
                                         ng-disabled="couponType === 1 && couponType === 2"
                                         get-focus="couponType === 2">
                                 <span class="discount-desc" ng-if="couponType === 2">{{i.useCouponDesc}}</span>
@@ -132,7 +136,10 @@
                     </div>
                     <!--留言-->
                     <div class="leaveMessage">
-                        <textarea ng-model="leaveMessage.content" placeholder="给卖家留言~" maxlength="80" adapt-textarea-minheight="2.09" row="4"></textarea>
+                        <textarea ng-model="leaveMessage.content" placeholder="给卖家留言~"
+                                maxlength="80" adapt-textarea-minheight="2.09" row="4"
+                                ng-focus="state.inInput = true"
+                                ng-blur="state.inInput = false"></textarea>
                         <label for="">留言:</label>
                     </div>
                     <div class="declare">
@@ -149,7 +156,7 @@
             </div>
         </div>
         <div class="settle-tools-wrapper">
-            <div class="settle-tools">
+            <div class="settle-tools" ng-class="{'reRelative':state.inInput}">
                 <div class="text">
                    <!--  <div>
                        共计 {{productNumber || 0}} 件商品,合计:<strong>&yen;{{ orderInfo.TotalPrice || 0 }}</strong>
@@ -280,42 +287,31 @@
         <div class="ymtui-dialog-mask"></div>
     </section>
     <!-- Google Tag Manager -->
-    <script>
-        (function(w, d, s, l, i, o) {
-          w['YmatouAnalyticsobject'] = o;
-          w[o] = w[o] || function () {
-            (w[o].q = w[o].q || []).push(arguments)
-          }
+    <!-- Google Tag Manager --> 
+    <script> 
+        (function(w, d, s, l, i, o) { 
+            w['YmatouAnalyticsobject'] = o; 
+            w[o] = w[o] || function () { 
+            (w[o].q = w[o].q || []).push(arguments) 
+            } 
 
-          w[l] = w[l] || [];
-          w[l].push({
-            'gtm.start': new Date().getTime(),
-            event: 'gtm.js'
-          });
-          var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-          j.async = true;
-        j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-P26VLJ', '_dc_');
-    </script>
-    <!-- End Google Tag Manager -->
+            w[l] = w[l] || []; 
+            w[l].push({ 
+            'gtm.start': new Date().getTime(), 
+            event: 'gtm.js' 
+            }); 
+            var f = d.getElementsByTagName(s)[0], 
+            j = d.createElement(s), 
+            dl = l != 'dataLayer' ? '&l=' + l : ''; 
+            j.async = true; 
+            j.src = '//www.googletagmanager.com/gtm.js?rnd=' + Date.now()+''+Math.random()*1E16 + '&id=' + i + dl; 
+            f.parentNode.insertBefore(j, f); 
+        })(window, document, 'script', 'dataLayer', 'GTM-TXC7VJ', '_dc_'); 
+    </script> 
+    <!-- End Google Tag Manager --> 
     <script src="http://static.jyh.ymatou.com/commons/js/jweixin.2015110601.js"></script>
-    <script src="http://static.jyh.ymatou.com/commons/js/ymtapi.2015110601.js?wxAutoInit=1"></script>
-    <script type="text/javascript" src="http://staticwap.ymatou.com/item.app/build/swiper.2015091501.js"></script>
+    <script src="http://static.preorder.app.ymatou.com/scripts/YmtApi-626a95ba0d.js"></script>
     <script src="http://static.preorder.app.ymatou.com/scripts/vendor/zepto,angular-10f112330f.js"></script>
-    <script src="http://static.preorder.app.ymatou.com/scripts/settle-app_min-c927e4422d.js"></script>
-    <script>
-
-        var swiper = new Swiper('.swiper-container', {
-            pagination: '.swiper-pagination',
-            paginationClickable: true,
-            nextButton: '.swiper-button-next',
-            prevButton: '.swiper-button-prev',
-            autoHeight: true, //enable auto height
-        });
-
-    </script>
+    <script src="http://static.preorder.app.ymatou.com/scripts/settle-app_min-5ef60c3689.js"></script>
 </body>
 </html>

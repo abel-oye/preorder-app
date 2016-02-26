@@ -289,30 +289,32 @@
         <div class="ymtui-dialog-mask"></div>
     </section>
     <!-- Google Tag Manager -->
-    <script>
-        (function(w, d, s, l, i, o) {
-          w['YmatouAnalyticsobject'] = o;
-          w[o] = w[o] || function () {
-            (w[o].q = w[o].q || []).push(arguments)
-          }
+    <!-- Google Tag Manager --> 
+    <script> 
+        (function(w, d, s, l, i, o) { 
+            w['YmatouAnalyticsobject'] = o; 
+            w[o] = w[o] || function () { 
+            (w[o].q = w[o].q || []).push(arguments) 
+            } 
 
-          w[l] = w[l] || [];
-          w[l].push({
-            'gtm.start': new Date().getTime(),
-            event: 'gtm.js'
-          });
-          var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != 'dataLayer' ? '&l=' + l : '';
-          j.async = true;
-        j.src = '//www.googletagmanager.com/gtm.js?id=' + i + dl;
-        f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-P26VLJ', '_dc_');
-    </script>
-    <!-- End Google Tag Manager -->
+            w[l] = w[l] || []; 
+            w[l].push({ 
+            'gtm.start': new Date().getTime(), 
+            event: 'gtm.js' 
+            }); 
+            var f = d.getElementsByTagName(s)[0], 
+            j = d.createElement(s), 
+            dl = l != 'dataLayer' ? '&l=' + l : ''; 
+            j.async = true; 
+            j.src = '//www.googletagmanager.com/gtm.js?rnd=' + Date.now()+''+Math.random()*1E16 + '&id=' + i + dl; 
+            f.parentNode.insertBefore(j, f); 
+        })(window, document, 'script', 'dataLayer', 'GTM-TXC7VJ', '_dc_'); 
+    </script> 
+    <!-- End Google Tag Manager --> 
     <script src="http://static.jyh.ymatou.com/commons/js/jweixin.2015110601.js"></script>
-    <script src="http://static.jyh.ymatou.com/commons/js/ymtapi.2015110601.js?wxAutoInit=1"></script>
-    <script type="text/javascript" src="http://staticwap.ymatou.com/item.app/build/swiper.2015091501.js"></script>
+    <!-- build:js /scripts/YmtApi.js -->
+    <script src="/scripts/YmtApi.js"></script>
+    <!-- endbuild -->
     <!-- build:js /scripts/vendor/zepto,angular.js -->
     <script src="/scripts/vendor/zepto.min.js"></script>
     <script src="/scripts/vendor/angular.min.js"></script>

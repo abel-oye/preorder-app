@@ -2,6 +2,7 @@
 
 ;(function () {
     'use strict';
+
     /**
      * [preOrder ]
      * @type {[type]}
@@ -510,9 +511,7 @@
 
                     $scope.couponType = 3;
                     product.useCouponDesc = '抵扣￥' + product.usedGift;
-                }
-
-               
+                }              
 
                 acountDiscount();
             };
@@ -768,7 +767,7 @@
                         DeviceId: search.DeviceId || search.DeviceToken || '0000000',
                         channel:(ua.match(/Channel\=(?:([^\s]*))/i) || [])[1] || 'wap',//获得app下载渠道
                         ThirdId:search.ThirdId,
-                        LeaveMessage:encodeURIComponent(encodeURIComponent($scope.leaveMessage.content))//留言
+                        LeaveMessage:$scope.leaveMessage.content//留言
                     }).success(function (res) {
                         if (res.Code == 200) {
                             var result = res.Data;
@@ -1226,6 +1225,15 @@
                 //如果未选择省 清空市
                 if(addressService.item.ProvinceName){
                     addressService.selectCityObj = [];
+                    var ProvinceName = addressService.item.ProvinceName;
+                    if(addressService.history.ProvinceName != ProvinceName){
+                        //只有历史不为空，与本次城市不一致才将县置为空
+                        if(addressService.history.ProvinceName){
+                            addressService.item.CityName = '选择市';
+                        }
+                        addressService.history.ProvinceName = ProvinceName;
+                        
+                    } 
                     for (var i in addressService.cityList['0']) {
                         if (addressService.item.ProvinceName == addressService.cityList['0'][i]) {
                             addressService.select.CityNameId = '0,' + i;
@@ -1320,7 +1328,7 @@
 
                 var cityKey = 'cityListStr1',
                     cityListStr = localStorage.getItem(cityKey);
-                //@TODO 现在的本地缓存没有版本号，每次变更需要重置原来的key，而且每次都要删除原key
+                //@ 现在的本地缓存没有版本号，每次变更需要重置原来的key，而且每次都要删除原key
                 localStorage.removeItem('cityListStr');
 
                 if (cityListStr) {
@@ -1351,7 +1359,7 @@
                         if (result.Code == 200) {
                             if (result.Data && (resultAddress = result.Data.Address)) {
                                 addressService.item = resultAddress;
-                                addressService.history = {}
+                                addressService.history = {};
                                 getCityList(function () {
                                     addressService.selectCity();
                                     addressService.areaCity();
@@ -1462,7 +1470,7 @@
 
                 data4jsonp(jsApiHost + '/api/address/' + url, {
                     //@TODO 由于调用jyh上面的ymtapi的版本 param方法错误，多解码一次导致参数错误；
-                    params: encodeURIComponent(encodeURIComponent(JSON.stringify(obj)))
+                    params: JSON.stringify(obj)
                 }).success(function (ret) {
                     if (ret.Code == 200) {
                         cb && cb(ret.Data);
@@ -1530,4 +1538,6 @@
         angular.bootstrap(document.documentElement, ['preOrderApp']);
     });
 
+    YmtApi.initWechat({});
+    
 })(window);
